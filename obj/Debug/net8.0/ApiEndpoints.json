@@ -1,5 +1,25 @@
 [
   {
+    "ContainingType": "FitLog.Controllers.TestController",
+    "Method": "DbCheck",
+    "RelativePath": "api/Test/dbcheck",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FitLog.Controllers.TestController",
+    "Method": "Ping",
+    "RelativePath": "api/Test/ping",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "FitLog.Controllers.WeatherForecastController",
     "Method": "Get",
     "RelativePath": "WeatherForecast",

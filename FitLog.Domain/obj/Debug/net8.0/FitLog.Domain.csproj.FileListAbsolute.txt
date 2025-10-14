@@ -1,0 +1,11 @@
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\bin\Debug\net8.0\FitLog.Domain.deps.json
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\bin\Debug\net8.0\FitLog.Domain.dll
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\bin\Debug\net8.0\FitLog.Domain.pdb
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\FitLog.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\FitLog.Domain.AssemblyInfoInputs.cache
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\FitLog.Domain.AssemblyInfo.cs
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\FitLog.Domain.csproj.CoreCompileInputs.cache
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\FitLog.Domain.dll
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\refint\FitLog.Domain.dll
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\FitLog.Domain.pdb
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\ref\FitLog.Domain.dll

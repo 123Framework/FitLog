@@ -5,6 +5,10 @@ VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitLog", "FitLog\FitLog.csproj", "{2D44696D-4ED6-4374-9611-FB50F1E38DA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitLog.Domain", "FitLog.Domain\FitLog.Domain.csproj", "{80BC36DB-D21F-4002-955B-C97E681A511C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitLog.Infrastructure", "FitLog.Infrastructure\FitLog.Infrastructure.csproj", "{011E82FD-E581-4030-9E22-ED8571B5CF57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{2D44696D-4ED6-4374-9611-FB50F1E38DA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D44696D-4ED6-4374-9611-FB50F1E38DA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D44696D-4ED6-4374-9611-FB50F1E38DA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80BC36DB-D21F-4002-955B-C97E681A511C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80BC36DB-D21F-4002-955B-C97E681A511C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80BC36DB-D21F-4002-955B-C97E681A511C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80BC36DB-D21F-4002-955B-C97E681A511C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{011E82FD-E581-4030-9E22-ED8571B5CF57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{011E82FD-E581-4030-9E22-ED8571B5CF57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{011E82FD-E581-4030-9E22-ED8571B5CF57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{011E82FD-E581-4030-9E22-ED8571B5CF57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

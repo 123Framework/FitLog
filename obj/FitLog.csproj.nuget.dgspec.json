@@ -49,6 +49,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.21, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -119,9 +125,17 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.21, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.20, )"
+              "version": "[8.0.21, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.21, )"
             }
           },
           "imports": [
@@ -172,6 +186,9 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
+              "C:\\Users\\meysi\\source\\repos\\FitLog\\FitLog.Domain\\FitLog.Domain.csproj": {
+                "projectPath": "C:\\Users\\meysi\\source\\repos\\FitLog\\FitLog.Domain\\FitLog.Domain.csproj"
+              },
               "C:\\Users\\meysi\\source\\repos\\FitLog\\FitLog.Infrastructure\\FitLog.Infrastructure.csproj": {
                 "projectPath": "C:\\Users\\meysi\\source\\repos\\FitLog\\FitLog.Infrastructure\\FitLog.Infrastructure.csproj"
               }
@@ -196,17 +213,17 @@
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.20, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[8.0.20, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.20, )"
+              "version": "[8.0.21, )"
             },
             "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",

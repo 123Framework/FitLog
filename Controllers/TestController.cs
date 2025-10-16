@@ -22,7 +22,9 @@ namespace FitLog.Controllers
         public IActionResult DbCheck()
         {
             var canConnect = _context.Database.CanConnect();
-            return Ok(new {Connected = canConnect});
+            bool connected = _context.Database.CanConnect();
+            int users = _context.Users.Count();
+            return Ok(new {  connected, users});
         }
 
     }

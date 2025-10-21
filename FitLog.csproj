@@ -22,4 +22,8 @@
     <ProjectReference Include="..\FitLog.Infrastructure\FitLog.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Новая папка\" />
+  </ItemGroup>
+
 </Project>

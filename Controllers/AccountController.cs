@@ -36,9 +36,33 @@ namespace FitLog.Controllers
 
             }
             await _signInManager.SignInAsync(user, isPersistent: true);
-            return Ok(new {Message = "Регистрация успешна"});
+            return Ok(new { Message = "Регистрация успешна" });
+
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            var result = await _signInManager.PasswordSignInAsync(dto.Email, dto.Password, true, false);
+            if (!result.Succeeded)
+            {
+                return Unauthorized("неверный логин или пароль");
+            }
+
+            return Ok(new { Message = "Вход выполнен" });
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok(new { Message = "выход выполнен" });
+        }
+
+
+       
     }
+
+
 
     public class RegisterDto
     {

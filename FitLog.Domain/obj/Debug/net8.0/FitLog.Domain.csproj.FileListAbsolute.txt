@@ -9,3 +9,4 @@ C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\FitLog.Domain.
 C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\refint\FitLog.Domain.dll
 C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\FitLog.Domain.pdb
 C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\ref\FitLog.Domain.dll
+C:\Users\meysi\source\repos\FitLog\FitLog.Domain\obj\Debug\net8.0\FitLog.Domain.csproj.AssemblyReference.cache

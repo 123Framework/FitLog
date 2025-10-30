@@ -1,0 +1,14 @@
+{
+  "name": "fit-node",
+  "version": "0.0.0",
+  "description": "FitNode",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "devDependencies": {
+    "eslint": "^8.21.0"
+  },
+  "eslintConfig": {
+  }
+}

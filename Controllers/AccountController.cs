@@ -1,4 +1,5 @@
 ﻿using FitLog.Infrastructure.Data;
+using FitLog.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,7 +40,7 @@ namespace FitLog.Controllers
             return Ok(new { Message = "Регистрация успешна" });
 
         }
-        [HttpPost("login")]
+        /*[HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             var result = await _signInManager.PasswordSignInAsync(dto.Email, dto.Password, true, false);
@@ -50,7 +51,21 @@ namespace FitLog.Controllers
 
             return Ok(new { Message = "Вход выполнен" });
         }
+        */
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginVM model)
+        {
+            if (!ModelState.IsValid) return BadRequest();
 
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null) return Unauthorized();
+
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
+            if (result.Succeeded)
+                return Ok();
+
+            return Unauthorized();
+        }
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {

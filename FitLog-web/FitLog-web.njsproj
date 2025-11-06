@@ -31,7 +31,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="index.cshtml">
+    <Content Include="index.html">
       <SubType>Code</SubType>
     </Content>
     <Content Include="server.js" />
@@ -49,6 +49,11 @@
     <TypeScriptCompile Include="src\main.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\pages\Register.tsx" />
+    <TypeScriptCompile Include="src\pages\Profile.tsx" />
+    <TypeScriptCompile Include="src\pages\Login.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\router.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -56,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
+    <Folder Include="src\pages\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>

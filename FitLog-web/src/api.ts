@@ -1,39 +1,7 @@
-type Json = Record<string, unknown>;
-
-async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
-    const res = await fetch(url, {
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
-        ...options
-    });
-    if (!res.ok) {
-        const text = await res.text().catch(() => '');
-        throw new Error(text || res.statusText);
-
-    }
-    if (res.status === 204) return {} as T
-    return res.json() as Promise<T>
-
-}
-export function register(data: Json) {
-    return request<{ message: string; user: Json }>('/api/account/register', {
-        method: 'POST',
-        body: JSON.stringify(data)
-
-    })
-
-}
-export function login(data: JSON) {
-    return request<{ message: string }>('/api/account/login', {
-        method: 'POST',
-        body: JSON.stringify(data)
-    })
-}
-
-export function logout() {
-    return request<{ message: string }>('/api/account/logout', {method: 'POST'})
-}
-export function me() {
-    return request<{ authenticated: Boolean; name: string }>('api/account/me')
-
-}
+type Json = Record<string, unknown>;async function request<T>(url: string, options: RequestInit = {}): Promise<T> {    const res = await fetch(url, {        ...options,        credentials: 'include', headers: {            'Content-Type': 'application/json',            ...(options.headers || {}),        },    });    if (!res.ok) throw new Error(`HTTP ${res.status}`);    return res.json();}export const api = {    register: (data: Json) =>        request('/api/account/register', {            method: 'POST',            body: JSON.stringify(                {                    email: data.email,
+                    password: data.password,
+                    displayName: data.displayName,
+                    heightCm: data.heightCm,
+                    weightKg: data.weightKg,
+                }),        }),    login: (data: Json) =>        request('/api/account/login', {            method: 'POST',            body: JSON.stringify({
+                Email: data.email,                Password: data.password,            }),        }),    logout: () => request('/api/account/logout', { method: 'POST' }),    me: () => request('/api/account/me'),};

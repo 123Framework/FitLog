@@ -60,7 +60,7 @@ namespace FitLog.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null) return Unauthorized();
 
-            var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, true, false);
             if (result.Succeeded)
                 return Ok();
 

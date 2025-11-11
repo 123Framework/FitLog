@@ -53,14 +53,15 @@ namespace FitLog.Controllers
         }
         */
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginVM model)
+        public async Task<IActionResult> Login([FromBody]LoginVM model)
         {
             if (!ModelState.IsValid) return BadRequest();
-
+            Console.WriteLine($"Login Attempt: {model.Email}/{model.Password}");
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null) return Unauthorized();
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, true, false);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: true, lockoutOnFailure:false);
+            Console.WriteLine($"Login attempt for {user.Email}:{result.Succeeded}");
             if (result.Succeeded)
                 return Ok();
 

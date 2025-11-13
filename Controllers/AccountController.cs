@@ -53,19 +53,19 @@ namespace FitLog.Controllers
         }
         */
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody]LoginVM model)
+        public async Task<IActionResult> Login([FromBody] LoginVM model)
         {
             if (!ModelState.IsValid) return BadRequest();
             Console.WriteLine($"Login Attempt: {model.Email}/{model.Password}");
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null) return Unauthorized();
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: true, lockoutOnFailure:false);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: true, lockoutOnFailure: false);
             Console.WriteLine($"Login attempt for {user.Email}:{result.Succeeded}");
             if (result.Succeeded)
-                return Ok();
+                return Ok(new { message = "Login successful" });
 
-            return Unauthorized();
+            return Unauthorized(new { message = "invalid credentials" });
         }
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
@@ -74,8 +74,23 @@ namespace FitLog.Controllers
             return Ok(new { Message = "выход выполнен" });
         }
 
+        [HttpGet("me")]
+        public async Task<IActionResult> Me()
+        {
+            if (!User.Identity?.IsAuthenticated ?? true)
+                return Unauthorized(new { message = "Not logged in" });
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) 
+                return Unauthorized(new {message = "User not found"});
+            return Ok(new
+            {
+                email = user.Email,
+                displayName = user.DisplayName,
+                heightCm = user.HeightCm,
+                weightKg = user.WeightKg,
+            });
+        }
 
-       
     }
 
 
@@ -94,4 +109,7 @@ namespace FitLog.Controllers
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
+
+
+
 }

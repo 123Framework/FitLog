@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { api } from '../api'
+import { useNavigate } from 'react-router-dom'
 export default function Login() {
     const [form, setForm] = useState({ email: '', password: '' })
     const [msg, setMsg] = useState('')
+    const navigate = useNavigate()
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -10,6 +12,7 @@ export default function Login() {
         try {
             await api.login(form)
             setMsg('Loggin successfully!!')
+            navigate('/profile')
         }
         catch {
             setMsg("Invalid Login")

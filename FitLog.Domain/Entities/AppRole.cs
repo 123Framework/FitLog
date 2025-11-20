@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FitLog.Domain.Entities
 {
-    public class AppRole : IdentityRole<int>
+    public class AppRole : IdentityRole<string>
      {
 
     }

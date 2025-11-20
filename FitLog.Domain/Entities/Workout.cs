@@ -1,4 +1,6 @@
-﻿namespace FitLog.Domain.Entities
+﻿using FitLog.Infrastructure.Data;
+
+namespace FitLog.Domain.Entities
 {
     public class Workout
     {
@@ -16,6 +18,7 @@
         public double CaloriesBurned { get; set; }
 
         //nav
-        public User? User { get; set; }
+        public AppUser User { get; set; } = null!;
+
     }
 }

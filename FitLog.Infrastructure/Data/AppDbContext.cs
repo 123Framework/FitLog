@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FitLog.Infrastructure.Data
 {
-    public class AppDbContext  : IdentityDbContext<AppUser, AppRole, int>
+    public class AppDbContext  : IdentityDbContext<AppUser, AppRole, string>
 
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }

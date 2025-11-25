@@ -4,4 +4,15 @@ type Json = Record<string, unknown>;async function request<T>(url: string, op
                     heightCm: data.heightCm,
                     weightKg: data.weightKg,
                 }),        }),    login: (data: Json) =>        request('/api/account/login', {            method: 'POST',            body: JSON.stringify({
-                Email: data.email,                Password: data.password,            }),        }),    logout: () => request('/api/account/logout', { method: 'POST' }),    me: () => request('/api/account/me'),};
+                Email: data.email,                Password: data.password,            }),        }),    logout: () => request('/api/account/logout', { method: 'POST' }),    me: () => request('/api/account/me'),      request: async (url: string, options: RequestInit = {}) => {        const res = await fetch(url, {
+            ...options,
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                ...(options.headers || {}),
+            },
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+    },    getWorkouts:()=>api.request('/api/workout'),};

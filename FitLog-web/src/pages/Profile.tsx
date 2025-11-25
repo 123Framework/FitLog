@@ -14,7 +14,7 @@ export default function Profile() {
     return (
         <div>
             <h2>Profile</h2>
-            <p>?? Username: {user.email}</p>
+            <p>Username: {user.email}</p>
             <p>Display name:{ user.displayName}</p>
             <p>Height:{ user.heightCm}cm</p>
             <p>Weight:{ user.weightKg}kg</p>

@@ -19,12 +19,18 @@ namespace FitLog.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<User>(entity =>
+            modelBuilder.Entity<AppUser>(entity =>
+            {
+                entity.Property(u => u.Email).IsRequired().HasMaxLength(100);
+                entity.HasIndex(u => u.Email)
+                .IsUnique();
+            });
+            /*modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(u => u.Id);
                 entity.Property(u => u.Email).IsRequired().HasMaxLength(100);
                 entity.HasIndex(u => u.Email).IsUnique();
-            });
+            });*/
             modelBuilder.Entity<Workout>(entity =>
             {
                 entity.HasKey(w => w.Id);

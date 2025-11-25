@@ -11,7 +11,7 @@ namespace FitLog.Domain.Entities
 
         public DateTime Date { get; set; }
         public string Title { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
 
         public int DurationMin { get; set; }
 

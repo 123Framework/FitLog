@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../api'
+import '../WorkoutStyle.css'
 
 export default function Workouts() {
 
@@ -31,7 +32,15 @@ export default function Workouts() {
             setMsg('Error adding workout')
         }
     }
-
+    const deleteWorkout = async (id: number) => {
+        try {
+            await api.request(`/api/workout/${id}`, { method: 'DELETE' })
+            setWorkouts(workouts.filter(w => w.id !== id))
+        }
+        catch {
+            setMsg('Failed to delete')
+        }
+    }
     return (
         <div>
             <h2>Workouts</h2>
@@ -58,10 +67,15 @@ export default function Workouts() {
             <ul>
                 {workouts.map((w) => (
                     <li key={w.id}>
+
                         {w.title} - {w.durationMin} min ({w.caloriesBurned} kcal)
+                        <button onClick={() => deleteWorkout(w.id) }>X</button>
                     </li>
                 ))}
             </ul>
+            
         </div>
+
+       
     )
 }

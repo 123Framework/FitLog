@@ -26,7 +26,7 @@ namespace FitLog.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetWotkouts()
+        public async Task<IActionResult> GetWorkouts()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
@@ -48,9 +48,11 @@ namespace FitLog.Controllers
             {
                 UserId = user.Id,
                 Title = dto.Title,
+                Notes = dto.Notes,
                 Date = dto.Date == default ? DateTime.UtcNow : dto.Date,
                 DurationMin = dto.DurationMin,
                 CaloriesBurned = dto.CaloriesBurned
+
             };
             _db.Workouts.Add(workout);
             await _db.SaveChangesAsync();
@@ -58,6 +60,24 @@ namespace FitLog.Controllers
 
         }
         [HttpDelete("{id}")]
+
+        public async Task<IActionResult> UpdateWorkout(int id, [FromBody] WorkoutDto dto)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            var workout = await _db.Workouts.FirstOrDefaultAsync (w => w.Id == id && w.UserId == user.Id);
+            if (workout == null) return NotFound();
+
+            workout.Title = dto.Title;
+            workout.Notes = dto.Notes;
+            workout.Date = dto.Date == default ? DateTime.UtcNow : dto.Date;
+            workout.DurationMin = dto.DurationMin;
+            workout.CaloriesBurned = dto.CaloriesBurned;
+
+            await _db.SaveChangesAsync();
+            return Ok(workout);
+        }
         public async Task<IActionResult> DeleteWorkout(int id)
         {
             var user = await _userManager.GetUserAsync(User);

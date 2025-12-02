@@ -36,6 +36,7 @@ export default function Workouts() {
         try {
             await api.request(`/api/workout/${id}`, { method: 'DELETE' })
             setWorkouts(workouts.filter(w => w.id !== id))
+            setMsg("workout delete")
         }
         catch {
             setMsg('Failed to delete')

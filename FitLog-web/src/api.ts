@@ -66,7 +66,7 @@ export const api = {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
     },*/
-    getWorkouts: () => request('https://localhost:7236/api/workout'),
+    getWorkouts: () => request('/api/workout'),
 
     
 };

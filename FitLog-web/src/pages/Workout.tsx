@@ -13,6 +13,7 @@ export default function Workouts() {
     })
 
     const [msg, setMsg] = useState('')
+    const [editing, setEditing] = useState<any | null>(null);
     useEffect(() => {
         api.request('/api/workout')
             .then(setWorkouts)
@@ -42,6 +43,24 @@ export default function Workouts() {
             setMsg('Failed to delete')
         }
     }
+
+    const saveEdit = async () => {
+        try {
+            const updated = await api.request<any>(`/api/workout/${editing.id}`, {
+                method: "PUT",
+                body: JSON.stringify(editing),
+            });
+            setWorkouts(workouts.map(w => w.id === updated.id ? updated : w));
+            setEditing(null);
+            setMsg("Workout updated!");
+        }
+        catch {
+            setMsg('Failed to edit')
+        }
+    }
+
+
+
     return (
         <div>
             <h2>Workouts</h2>
@@ -63,20 +82,40 @@ export default function Workouts() {
                 <button type="submit">Add workout</button>
 
             </form>
-
+            {editing && (
+                <div className="edit-modal">
+                    <h3>Edit workout</h3>
+                    <input placeholder="Title"
+                        value={form.title}
+                        onChange={(e) => setForm({ ...form, title: e.target.value })} /><br />
+                    <input placeholder="Notes"
+                        value={form.notes}
+                        onChange={(e) => setForm({ ...form, notes: e.target.value })} /> <br />
+                    <input type="number"
+                        placeholder="Duration (min)"
+                        value={form.durationMin}
+                        onChange={(e) => setForm({ ...form, durationMin: Number(e.target.value) })} /> <br />
+                    <input type="number"
+                        placeholder="Calories burned"
+                        value={form.caloriesBurned}
+                        onChange={(e) => setForm({ ...form, caloriesBurned: Number(e.target.value) })} /> <br />
+                    <button onClick={saveEdit }>Save</button>
+                    <button onClick={() => setEditing(null) }>Cancel</button>
+                </div>
+            )}
             <p>{msg}</p>
             <ul>
                 {workouts.map((w) => (
                     <li key={w.id}>
 
                         {w.title} - {w.durationMin} min ({w.caloriesBurned} kcal)
-                        <button onClick={() => deleteWorkout(w.id) }>X</button>
+                        <button onClick={() => deleteWorkout(w.id)}>X</button>
                     </li>
                 ))}
             </ul>
-            
+
         </div>
 
-       
+
     )
 }

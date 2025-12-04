@@ -37,6 +37,9 @@
     <Content Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="src\WorkoutStyle.css">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +55,9 @@
     <TypeScriptCompile Include="src\pages\Register.tsx" />
     <TypeScriptCompile Include="src\pages\Profile.tsx" />
     <TypeScriptCompile Include="src\pages\Login.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\pages\Workout.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\router.tsx">

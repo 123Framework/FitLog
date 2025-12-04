@@ -86,19 +86,19 @@ export default function Workouts() {
                 <div className="edit-modal">
                     <h3>Edit workout</h3>
                     <input placeholder="Title"
-                        value={form.title}
-                        onChange={(e) => setForm({ ...form, title: e.target.value })} /><br />
+                        value={editing.title}
+                        onChange={(e) => setEditing({ ...editing, title: e.target.value })} /><br />
                     <input placeholder="Notes"
-                        value={form.notes}
-                        onChange={(e) => setForm({ ...form, notes: e.target.value })} /> <br />
+                        value={editing.notes}
+                        onChange={(e) => setEditing({ ...editing, notes: e.target.value })} /> <br />
                     <input type="number"
                         placeholder="Duration (min)"
-                        value={form.durationMin}
-                        onChange={(e) => setForm({ ...form, durationMin: Number(e.target.value) })} /> <br />
+                        value={editing.durationMin}
+                        onChange={(e) => setEditing({ ...editing, durationMin: Number(e.target.value) })} /> <br />
                     <input type="number"
                         placeholder="Calories burned"
-                        value={form.caloriesBurned}
-                        onChange={(e) => setForm({ ...form, caloriesBurned: Number(e.target.value) })} /> <br />
+                        value={editing.caloriesBurned}
+                        onChange={(e) => setEditing({ ...editing, caloriesBurned: Number(e.target.value) })} /> <br />
                     <button onClick={saveEdit }>Save</button>
                     <button onClick={() => setEditing(null) }>Cancel</button>
                 </div>
@@ -109,6 +109,7 @@ export default function Workouts() {
                     <li key={w.id}>
 
                         {w.title} - {w.durationMin} min ({w.caloriesBurned} kcal)
+                        <button onClick={() => setEditing(w) }>Edit</button>
                         <button onClick={() => deleteWorkout(w.id)}>X</button>
                     </li>
                 ))}

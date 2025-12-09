@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../api'
-import '../WorkoutStyle.css'
+import '../Index.css'
 
 export default function Workouts() {
 
@@ -62,7 +62,9 @@ export default function Workouts() {
 
 
     return (
+       
         <div>
+            <h1 className="text-4xl text-red-600">Hello Tailwind!</h1>
             <h2>Workouts</h2>
             <form onSubmit={addWorkout}>
                 <input placeholder="Title"

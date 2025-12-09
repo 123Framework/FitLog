@@ -37,9 +37,11 @@
     <Content Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <Content Include="src\WorkoutStyle.css">
+    <Content Include="src\Index.css">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="src\postcss.config.js" />
+    <Content Include="src\tailwind.config.js" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>

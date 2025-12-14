@@ -3,7 +3,7 @@
     public class Meal
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public int UserId { get; set; } //= string.Empty;
 
         public DateTime DateTime { get; set; }
         public string Name { get; set; } = string.Empty;

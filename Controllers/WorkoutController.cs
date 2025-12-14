@@ -59,7 +59,11 @@ namespace FitLog.Controllers
             return Ok(workout);
 
         }
-        [HttpDelete("{id}")]
+
+
+
+
+        [HttpPut("{id}")]
 
         public async Task<IActionResult> UpdateWorkout(int id, [FromBody] WorkoutDto dto)
         {
@@ -78,6 +82,7 @@ namespace FitLog.Controllers
             await _db.SaveChangesAsync();
             return Ok(workout);
         }
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteWorkout(int id)
         {
             var user = await _userManager.GetUserAsync(User);

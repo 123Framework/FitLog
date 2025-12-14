@@ -34,14 +34,14 @@
     <Content Include="index.html">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="postcss.config.js" />
     <Content Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="src\Index.css">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="src\postcss.config.js" />
-    <Content Include="src\tailwind.config.js" />
+    <Content Include="tailwind.config.js" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
@@ -52,6 +52,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\main.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\pages\Meals.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\pages\Register.tsx" />

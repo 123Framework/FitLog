@@ -62,26 +62,26 @@ export default function Workouts() {
 
 
     return (
-       
-        <div>
+
+        <div className="max-w-2xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
             <h1 className="text-4xl text-red-600">Hello Tailwind!</h1>
-            <h2>Workouts</h2>
-            <form onSubmit={addWorkout}>
-                <input placeholder="Title"
+            <h2 className="text-3xl font-bold mb-6">Workouts</h2>
+            <form className="space-y-3 mb-6" onSubmit={addWorkout}>
+                <input className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400" placeholder="Title"
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })} /><br />
-                <input placeholder="Notes"
+                <input className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400" placeholder="Notes"
                     value={form.notes}
                     onChange={(e) => setForm({ ...form, notes: e.target.value })} /> <br />
-                <input type="number"
+                <input className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400" type="number"
                     placeholder="Duration (min)"
                     value={form.durationMin}
                     onChange={(e) => setForm({ ...form, durationMin: Number(e.target.value) })} /> <br />
-                <input type="number"
+                <input className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-400" type="number"
                     placeholder="Calories burned"
                     value={form.caloriesBurned}
                     onChange={(e) => setForm({ ...form, caloriesBurned: Number(e.target.value) })} /> <br />
-                <button type="submit">Add workout</button>
+                <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700" type="submit">Add workout</button>
 
             </form>
             {editing && (
@@ -101,18 +101,20 @@ export default function Workouts() {
                         placeholder="Calories burned"
                         value={editing.caloriesBurned}
                         onChange={(e) => setEditing({ ...editing, caloriesBurned: Number(e.target.value) })} /> <br />
-                    <button onClick={saveEdit }>Save</button>
-                    <button onClick={() => setEditing(null) }>Cancel</button>
+                    <button onClick={saveEdit}>Save</button>
+                    <button onClick={() => setEditing(null)}>Cancel</button>
                 </div>
             )}
             <p>{msg}</p>
-            <ul>
+            <ul className="space-y-4">
                 {workouts.map((w) => (
-                    <li key={w.id}>
-
-                        {w.title} - {w.durationMin} min ({w.caloriesBurned} kcal)
-                        <button onClick={() => setEditing(w) }>Edit</button>
-                        <button onClick={() => deleteWorkout(w.id)}>X</button>
+                    <li className="p-4 bg-gray-100 rounded-lg shadow flex justify-between items-center" key={w.id}>
+                        <p className="font-semibold text-lg">{w.title}</p>
+                        <p className="text-sm text-gray-600">{w.durationMin} min ({w.caloriesBurned} kcal)</p>
+                        <div className="flex gap-2">
+                            <button className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600" onClick={() => setEditing(w)}>Edit</button>
+                            <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700" onClick={() => deleteWorkout(w.id)}>X</button>
+                        </div>
                     </li>
                 ))}
             </ul>

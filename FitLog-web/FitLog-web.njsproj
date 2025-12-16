@@ -68,6 +68,9 @@
     <TypeScriptCompile Include="src\router.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="src\types.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="vite.config.ts" />
   </ItemGroup>
   <ItemGroup>

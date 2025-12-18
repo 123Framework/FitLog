@@ -16,7 +16,7 @@ export default function Meals() {
     
     //load meals
     useEffect(() => {
-        api.request<any[]>("/api/meal")
+        api.request<any[]>("/api/Meal")
             .then((data) => setMeals(data))
             .catch(() => setMsg("not logged in!"))
     }, []);
@@ -24,7 +24,7 @@ export default function Meals() {
     const addMeal = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const result = await api.request<Meal>("/api/meal", {
+            const result = await api.request<Meal>("/api/Meal", {
                 method: "POST",
                 body: JSON.stringify(form),
             });
@@ -48,7 +48,7 @@ export default function Meals() {
 
     const deleteMeal = async (id: number) => {
         try {
-            await api.request(`/api/meal/${id}`, { method: "DELETE" });
+            await api.request(`/api/Meal/${id}`, { method: "DELETE" });
             setMeals(meals.filter(m => m.id !== id));
 
         } catch {
@@ -59,7 +59,7 @@ export default function Meals() {
 
     const saveEdit = async () => {
         try {
-            const updated = await api.request<Meal>(`/api/meal/${editing!.id}`, {
+            const updated = await api.request<Meal>(`/api/Meal/${editing!.id}`, {
                 method: "PUT",
                 body: JSON.stringify(editing),
             });

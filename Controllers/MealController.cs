@@ -14,8 +14,9 @@ namespace FitLog.Controllers
     public class MealController : ControllerBase
     {
         private readonly AppDbContext _db;
-        private readonly UserManager<User> _userManager;
-        public MealController(AppDbContext db, UserManager<User> userManager)
+        private readonly UserManager<AppUser> _userManager; 
+        ///APPUSER
+        public MealController(AppDbContext db, UserManager<AppUser> userManager)
         {
             _db = db;
             _userManager = userManager;

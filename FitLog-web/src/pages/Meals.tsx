@@ -85,27 +85,32 @@ export default function Meals() {
     );
 
     return (
-        <div>
-            <h2>Meals</h2>
+        <div className="min-h-screen bg-gray-900 px-6 py-12">
+            <h2 className="text-center text-2x1 font-bold text-white mb-8">Meals</h2>
 
-            <form onSubmit={addMeal}>
+            <form className="space-y-4" onSubmit={addMeal}>
                 <input placeholder="Meal name" value={form.name} onChange={e => setForm({...form,name:e.target.value}) }/>
+            <div className="grid grid-cols-2 gap-4">
+               
                 <input placeholder="100Cal" value={form.calories} onChange={e => setForm({...form,calories:+e.target.value}) }/>
                 <input placeholder="protein" value={form.protein} onChange={e => setForm({...form,protein:+e.target.value}) }/>
                 <input placeholder="fat" value={form.fat} onChange={e => setForm({...form,fat:+e.target.value}) }/>
                 <input placeholder="carbs" value={form.carbs} onChange={e => setForm({...form,carbs:+e.target.value}) }/>
                 <input type="datetime-local" value={form.dateTime} onChange={e => setForm({ ...form, dateTime: e.target.value }) } />
-                <button type="submit">Add meal</button>
+                <button className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" type="submit">Add meal</button>
+            </div>
             </form>
 
-            <div>
-                <strong>Daily total:</strong><br />
+            <div className="mt-8 rounded-md bg-white/5 p-4 text-gray-200">
+                <strong className="text-white">Daily total:</strong><br />
+                <div className="mt-2 text-sm">
                 Calories: {total.cal} kcal <br />
                 Protein: {total.p} g |
                 Fat: {total.f} g |
-                Carbs: {total.c } g
+                Carbs: {total.c} g
             </div>
-            <p>{msg} </p>
+            </div>
+            <p className="mt-4 text-sm text-red-400">{msg} </p>
 
             <ul>
 

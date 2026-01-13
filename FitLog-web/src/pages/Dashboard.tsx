@@ -95,6 +95,14 @@ export default function Dashboard() {
         }
 
     }
+
+
+    const weightTrend = weights
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .map(w => ({
+            date: new Date(w.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }), weight: w.weightKg
+        }));
+
     useEffect(() => { loadWeights(); }, []);
     return (
         <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
@@ -147,45 +155,55 @@ export default function Dashboard() {
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
-                {/*<div className="p-4 bg-gray-100 rounded-lg space-y-2">*/}
-                {/*    <p><strong>Calories in: </strong>{caloriesIn} kcal</p>*/}
-                {/*    <p><strong>Calories out: </strong>{caloriesOut} kcal</p>*/}
-                {/*    <p><strong>Net Balance: </strong>{net} kcal</p>*/}
-                {/*    <hr></hr>*/}
-                {/*    <p><strong>Protein: </strong>{protein} g</p>*/}
-                {/*    <p><strong>Fat: </strong> {fat} g</p>*/}
-                {/*    <p><strong>Carbs: </strong> {carbs} g</p>*/}
-                {/*</div>*/}
-                <div className="p-4 bg-white shadow rounded-xl mb-6 flex itemes-center gap-3">
+                <div className="p-4 bg-white shadow rounded-xl">
+                    <h2 className="text-xl font-semibold mb-4">Weight Trend</h2>
+                    <ResponsiveContainer width="100%" height={250}>
+                        <LineChart data={weightTrend}>
+                            <Line type="monotone" dataKey="weight" stroke="#10b981" strokeWidth={3} />
+                            <Tooltip />
+                            <Legend />
+                        </LineChart>
+                    </ResponsiveContainer>
+                    </div>
+                    {/*<div className="p-4 bg-gray-100 rounded-lg space-y-2">*/}
+                    {/*    <p><strong>Calories in: </strong>{caloriesIn} kcal</p>*/}
+                    {/*    <p><strong>Calories out: </strong>{caloriesOut} kcal</p>*/}
+                    {/*    <p><strong>Net Balance: </strong>{net} kcal</p>*/}
+                    {/*    <hr></hr>*/}
+                    {/*    <p><strong>Protein: </strong>{protein} g</p>*/}
+                    {/*    <p><strong>Fat: </strong> {fat} g</p>*/}
+                    {/*    <p><strong>Carbs: </strong> {carbs} g</p>*/}
+                    {/*</div>*/}
+                    <div className="p-4 bg-white shadow rounded-xl mb-6 flex itemes-center gap-3">
 
-                    <input
-                        type="number"
-                        step="0.1"
-                        className="border p-2 rouned w-32"
-                        placeholder="Weight (kg)"
-                        value={newWeight}
-                        onChange={(e) => setNewWeight(e.target.value)}
-                    ></input>
-                    <button onClick={async () => {
-                        await api.request("/api/weight", {
-                            method: "POST",
-                            body: JSON.stringify({
-                                weightKg: Number(newWeight),
-                                date: new Date().toISOString()
-                            }),
+                        <input
+                            type="number"
+                            step="0.1"
+                            className="border p-2 rouned w-32"
+                            placeholder="Weight (kg)"
+                            value={newWeight}
+                            onChange={(e) => setNewWeight(e.target.value)}
+                        ></input>
+                        <button onClick={async () => {
+                            await api.request("/api/weight", {
+                                method: "POST",
+                                body: JSON.stringify({
+                                    weightKg: Number(newWeight),
+                                    date: new Date().toISOString()
+                                }),
 
-                        })
-                        setNewWeight("")
-                        loadWeights();
-                    }}
-                        className="bg-blue-600 text-white px-4 py-2 rounded">
-                        Save
-                    </button>
+                            })
+                            setNewWeight("")
+                            loadWeights();
+                        }}
+                            className="bg-blue-600 text-white px-4 py-2 rounded">
+                            Save
+                        </button>
 
+                    </div>
                 </div>
             </div>
-        </div>
 
-    )
+            )
 
 }

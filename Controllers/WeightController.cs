@@ -15,8 +15,8 @@ namespace FitLog.Controllers
     public class WeightController : ControllerBase
     {
         private readonly AppDbContext _db;
-        private readonly UserManager<User> _userManager;
-        public WeightController(AppDbContext db, UserManager<User> userManager)
+        private readonly UserManager<AppUser> _userManager;
+        public WeightController(AppDbContext db, UserManager<AppUser> userManager)
         {
             _db = db;
             _userManager = userManager;

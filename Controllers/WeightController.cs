@@ -1,13 +1,17 @@
 ﻿using FitLog.Domain.Entities;
 using FitLog.Infrastructure.Data;
 using FitLog.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FitLog.Controllers
 {
-
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
+    
     public class WeightController : ControllerBase
     {
         private readonly AppDbContext _db;

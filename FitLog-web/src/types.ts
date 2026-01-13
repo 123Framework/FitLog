@@ -17,3 +17,10 @@ export interface Workout {
     dateTime?: string;
 
 }
+export interface WeightEntry {
+    id: number;
+    weightKg: number;
+    date: string;
+
+
+}

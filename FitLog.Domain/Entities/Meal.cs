@@ -1,9 +1,11 @@
-﻿namespace FitLog.Domain.Entities
+﻿using FitLog.Infrastructure.Data;
+
+namespace FitLog.Domain.Entities
 {
     public class Meal
     {
         public int Id { get; set; }
-        public int UserId { get; set; } //= string.Empty;
+        public string UserId { get; set; } = string.Empty;
 
         public DateTime DateTime { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -13,7 +15,7 @@
         public double Carbs { get; set; } 
 
         //nav
-        public User? User { get; set; }
+        public AppUser? User { get; set; }
 
     }
 }

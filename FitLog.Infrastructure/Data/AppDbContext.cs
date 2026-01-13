@@ -16,6 +16,8 @@ namespace FitLog.Infrastructure.Data
        
         public DbSet<Workout> Workouts => Set<Workout>();
         public DbSet<Meal> Meals => Set<Meal>();
+
+        public DbSet<WeightEntry> Weights {  get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

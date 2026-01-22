@@ -68,5 +68,14 @@ export const api = {
     },*/
     getWorkouts: () => request('/api/workout'),
 
-    
+
+    setGoal: (data: any) =>
+        request("/api/goal", {
+            method: "POST",
+            body:JSON.stringify(data),
+        }),
+        getGoal: ()=> request("/api/goal"),
+
+
+
 };

@@ -88,7 +88,7 @@ export default function Dashboard() {
     const [weights, setWeights] = useState<WeightEntry[]>([]);
     async function loadWeights() {
         try {
-            const w = await api.request<WeightEntry[]>("/api/weight");
+            const w = await api.request<WeightEntry[]>("/api/Weight");
             setWeights(w);
         } catch {
 
@@ -200,7 +200,15 @@ export default function Dashboard() {
                             Save
                         </button>
 
+                </div>
+                {goal && goal.dailyCalories &&
+                    <div className="mt-4">
+                    <p>Calories progress:</p>
+                        <div className="w-full bg-gray-200 h-3 rounded">
+                            <div className="bg-green-500 h-3 rounded" style={{width: `${Math.min(100, (caloriesIn/goal.dailyCalories)*100)}%`} }/>
+                        </div>
                     </div>
+                }
                 </div>
             </div>
 

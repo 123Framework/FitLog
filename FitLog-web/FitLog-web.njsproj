@@ -55,6 +55,9 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\pages\Dashboard.tsx" />
+    <TypeScriptCompile Include="src\pages\Goals.tsx">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\pages\Meals.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>

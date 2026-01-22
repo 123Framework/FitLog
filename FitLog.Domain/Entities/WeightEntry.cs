@@ -9,7 +9,7 @@ namespace FitLog.Domain.Entities
      public class WeightEntry
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         public double WeightKg { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;
 

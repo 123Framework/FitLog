@@ -1,3 +1,0 @@
-C:\Users\meysi\source\repos\FitLog\FitLog-web\obj\Debug\FitLog-web.njsproj.AssemblyReference.cache
-C:\Users\meysi\source\repos\FitLog\FitLog-web\obj\Debug\FitLog-web.njsproj.CoreCompileInputs.cache
-C:\Users\meysi\source\repos\FitLog\FitLog-web\bin\Microsoft.NodejsTools.WebRole.dll

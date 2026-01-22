@@ -17,10 +17,24 @@ import {
 export default function Dashboard() {
     const [meals, setMeals] = useState<Meal[]>([]);
     const [workouts, setWorkouts] = useState<Workout[]>([]);
+
+    const [goal, setGoal] = useState<any | null>(null);
     const [msg, setMsg] = useState("");
 
+async function loadGoal() {
+    try {
+        const g = await api.request("/api/goal");
+        setGoal(g);
 
+    } catch (e) {
+        console.log("No goal set");
+    }
+}
 
+    useEffect(() => {
+        loadWeights();
+        loadGoal();
+    }, []);
     useEffect(() => {
         async function load() {
             try {

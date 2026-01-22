@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace FitLog.Infrastructure.Data
 {
     public class AppDbContext  : IdentityDbContext<AppUser, AppRole, string>
@@ -16,7 +17,7 @@ namespace FitLog.Infrastructure.Data
        
         public DbSet<Workout> Workouts => Set<Workout>();
         public DbSet<Meal> Meals => Set<Meal>();
-
+        public DbSet<UserGoal> Goals => Set<UserGoal>();
         public DbSet<WeightEntry> Weights {  get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,7 +53,12 @@ namespace FitLog.Infrastructure.Data
                 .HasForeignKey(m => m.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             });
-            
+
+            modelBuilder.Entity<UserGoal>(entity =>
+            {
+                entity.HasKey(m => m.Id);
+                entity.HasOne(g => g.User).WithOne().HasForeignKey<UserGoal>(g => g.UserId).OnDelete(DeleteBehavior.Cascade);
+            });
 
         }
     }

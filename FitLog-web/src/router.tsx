@@ -6,6 +6,7 @@ import Register from './pages/Register'
 import Workouts from './pages/Workout'
 import Meals from './pages/Meals'
 import Dashboard from "./pages/Dashboard";
+import Goals from './pages/Goals';
 
 export default function Router() {
     return (
@@ -17,7 +18,9 @@ export default function Router() {
                 <Route path="/profile" element={<Profile></Profile>} />
                 <Route path="/workout" element={<Workouts></Workouts>} />
                 <Route path="/meals" element={<Meals></Meals>} />
-                <Route path="/dashboard" element={<Dashboard></Dashboard> }/>
+                <Route path="/dashboard" element={<Dashboard></Dashboard>} />
+                <Route path="/goals" element={<Goals></Goals>} />
+
             </Routes>
         </BrowserRouter>
     )

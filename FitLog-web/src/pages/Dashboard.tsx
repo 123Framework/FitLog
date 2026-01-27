@@ -21,20 +21,19 @@ export default function Dashboard() {
     const [goal, setGoal] = useState<any | null>(null);
     const [msg, setMsg] = useState("");
 
-async function loadGoal() {
-    try {
-        const g = await api.request("/api/goal");
-        setGoal(g);
+    async function loadGoal() {
+        try {
+            const g = await api.request("/api/goal");
+            setGoal(g);
 
-    } catch (e) {
-        console.log("No goal set");
+        } catch (e) {
+            console.log("No goal set");
+        }
     }
-}
 
-    useEffect(() => {
-        loadWeights();
-        loadGoal();
-    }, []);
+
+
+
     useEffect(() => {
         async function load() {
             try {
@@ -117,7 +116,34 @@ async function loadGoal() {
             date: new Date(w.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }), weight: w.weightKg
         }));
 
+    useEffect(() => {
+        loadWeights();
+        loadGoal();
+    }, []);
+
     useEffect(() => { loadWeights(); }, []);
+
+    const targetWeight = goal?.targetWeight;
+    const currentWeight = weights.length > 0 ? weights[weights.length - 1].weightKg : null;
+    const startWeight = weights.length > 0 ? weights[0].weightKg : null;
+
+    let weightProgress = 0;
+    let weightLeft = 0;
+
+    if (targetWeight && currentWeight && startWeight) {
+
+        const totalToLose = startWeight - targetWeight;
+        const lost = startWeight - currentWeight;
+        weightLeft = currentWeight - targetWeight;
+
+        if (totalToLose > 0) {
+
+            weightProgress = Math.min(100, Math.max(0, (lost / totalToLose) * 100));
+        }
+    }
+
+
+
     return (
         <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
             <h1 className="text-4xl font-bold mb-4">Dashboard</h1>
@@ -178,54 +204,82 @@ async function loadGoal() {
                             <Legend />
                         </LineChart>
                     </ResponsiveContainer>
-                    </div>
-                    {/*<div className="p-4 bg-gray-100 rounded-lg space-y-2">*/}
-                    {/*    <p><strong>Calories in: </strong>{caloriesIn} kcal</p>*/}
-                    {/*    <p><strong>Calories out: </strong>{caloriesOut} kcal</p>*/}
-                    {/*    <p><strong>Net Balance: </strong>{net} kcal</p>*/}
-                    {/*    <hr></hr>*/}
-                    {/*    <p><strong>Protein: </strong>{protein} g</p>*/}
-                    {/*    <p><strong>Fat: </strong> {fat} g</p>*/}
-                    {/*    <p><strong>Carbs: </strong> {carbs} g</p>*/}
-                    {/*</div>*/}
-                    <div className="p-4 bg-white shadow rounded-xl mb-6 flex itemes-center gap-3">
+                </div>
+                {/*<div className="p-4 bg-gray-100 rounded-lg space-y-2">*/}
+                {/*    <p><strong>Calories in: </strong>{caloriesIn} kcal</p>*/}
+                {/*    <p><strong>Calories out: </strong>{caloriesOut} kcal</p>*/}
+                {/*    <p><strong>Net Balance: </strong>{net} kcal</p>*/}
+                {/*    <hr></hr>*/}
+                {/*    <p><strong>Protein: </strong>{protein} g</p>*/}
+                {/*    <p><strong>Fat: </strong> {fat} g</p>*/}
+                {/*    <p><strong>Carbs: </strong> {carbs} g</p>*/}
+                {/*</div>*/}
+                <div className="p-4 bg-white shadow rounded-xl mb-6 flex itemes-center gap-3">
 
-                        <input
-                            type="number"
-                            step="0.1"
-                            className="border p-2 rouned w-32"
-                            placeholder="Weight (kg)"
-                            value={newWeight}
-                            onChange={(e) => setNewWeight(e.target.value)}
-                        ></input>
-                        <button onClick={async () => {
-                            await api.request("/api/weight", {
-                                method: "POST",
-                                body: JSON.stringify({
-                                    weightKg: Number(newWeight),
-                                    date: new Date().toISOString()
-                                }),
+                    <input
+                        type="number"
+                        step="0.1"
+                        className="border p-2 rouned w-32"
+                        placeholder="Weight (kg)"
+                        value={newWeight}
+                        onChange={(e) => setNewWeight(e.target.value)}
+                    ></input>
+                    <button onClick={async () => {
+                        await api.request("/api/weight", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                weightKg: Number(newWeight),
+                                date: new Date().toISOString()
+                            }),
 
-                            })
-                            setNewWeight("")
-                            loadWeights();
-                        }}
-                            className="bg-blue-600 text-white px-4 py-2 rounded">
-                            Save
-                        </button>
+                        })
+                        setNewWeight("")
+                        loadWeights();
+                    }}
+                        className="bg-blue-600 text-white px-4 py-2 rounded">
+                        Save
+                    </button>
 
+                </div>
+                <div className="p-4 bg-white shadow rounded-xl col-span-2">
+                    <h2 className="text-xl font-semibold mb-4">Weight Progress(7 days)</h2>
+                    <ResponsiveContainer width="100%" height={200}>
+                        <LineChart data={weightTrend.slice(-7)}>
+                            <Line type="monotone" dataKey="weight" stroke="#14b8a6" strokeWidth={3} />
+                            <Tooltip />
+                        </LineChart>
+                    </ResponsiveContainer>
                 </div>
                 {goal && goal.dailyCalories &&
                     <div className="mt-4">
-                    <p>Calories progress:</p>
+                        <p>Calories progress:</p>
                         <div className="w-full bg-gray-200 h-3 rounded">
-                            <div className="bg-green-500 h-3 rounded" style={{width: `${Math.min(100, (caloriesIn/goal.dailyCalories)*100)}%`} }/>
+                            <div className="bg-green-500 h-3 rounded" style={{ width: `${Math.min(100, (caloriesIn / goal.dailyCalories) * 100)}%` }} />
                         </div>
                     </div>
                 }
-                </div>
-            </div>
 
-            )
+                {goal?.targetWeight && currentWeight && (
+                    <div className="p-4 bg-white shadow rounded-xl col-span-2">
+                        <h2 className="text-xl font-semibold mb-2">Weight Loss Progress</h2>
+                        <p className="text-gray-600">
+                            Start: {startWeight}kg - Now: {currentWeight}kg - Target: {targetWeight} kg
+                        </p>
+                        <div className="w-full bg-gray-200 h-4 rounded mt-2">
+                            <div className="bg-blue-600 h-4 rounded transition-all" style={{ width: `${weightProgress}%` }}></div>
+                        </div>
+                        <p className="mt-2 font-semibold">
+                            Progress: {weightProgress.toFixed(1)}%
+                            <span className="text-gray-500 ml-2">
+                                ({weightLeft.toFixed(1)}kg remaining)
+                            </span>
+                        </p>
+
+                    </div>
+                )}
+            </div>
+        </div>
+
+    )
 
 }

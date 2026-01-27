@@ -1,0 +1,25 @@
+﻿@model FitLog.Models.ViewModels.RegisterVM
+<h2>Регистрация</h2>
+
+<form method="post">
+    <label>Email:</label><br/>
+    <input asp-for="Email" /><br/>
+    <label>Пароль:</label><br/>
+    <input asp-for="Password" type="password"/><br/>
+    <label>Имя:</label>
+    <input asp-for="DisplayName"/><br/>
+    <label>Рост (см):</label>
+    <label>Вес (кг):</label>
+    <input asp-for="WeightKg" /><br/><br/>
+    <button type="submit">Зарегистрироваться</button>
+</form>
+<p><a href="/Views/Account/Login.cshtml">Уже есть аккаунт?</a></p>
+
+@if (!ViewData.ModelState.IsValid){
+
+    <ul>
+        @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors)){
+            <li>@e.ErrorMessage</li>
+        }
+    </ul>
+}

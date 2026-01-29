@@ -123,26 +123,59 @@ export default function Dashboard() {
 
     useEffect(() => { loadWeights(); }, []);
 
-    const targetWeight = goal?.targetWeight;
-    const currentWeight = weights.length > 0 ? weights[weights.length - 1].weightKg : null;
-    const startWeight = weights.length > 0 ? weights[0].weightKg : null;
+ const sortedWeights = [...weights].sort(
+        (a,b)=> new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    const targetWeight = goal?.targetWeight ?? null;
+    const currentWeight = sortedWeights.length > 0 ? sortedWeights[sortedWeights.length - 1].weightKg : null;
+    const startWeight = sortedWeights.length > 0 ? sortedWeights[0].weightKg : null;
 
     let weightProgress = 0;
     let weightLeft = 0;
 
+
+
     if (targetWeight && currentWeight && startWeight) {
 
-        const totalToLose = startWeight - targetWeight;
-        const lost = startWeight - currentWeight;
-        weightLeft = currentWeight - targetWeight;
-
-        if (totalToLose > 0) {
-
+        if (targetWeight < startWeight) {
+            const totalToLose = startWeight - targetWeight;
+            const lost = startWeight - currentWeight;
+            weightLeft = currentWeight - targetWeight;
             weightProgress = Math.min(100, Math.max(0, (lost / totalToLose) * 100));
+        }
+        else if (targetWeight > startWeight){
+            const totalToGain = targetWeight - startWeight;
+            const gained = currentWeight - startWeight;
+
+            weightLeft = targetWeight - currentWeight;
+            weightProgress = Math.min(100, Math.max(0, (gained / totalToGain) * 100));
         }
     }
 
+   
 
+    let mode: "lose" | "gain" | null = null;
+
+    if (startWeight !== null && targetWeight !== null) {
+        mode = targetWeight < startWeight ? "lose" : "gain";
+    }
+
+    if (mode === "lose") {
+        const total = startWeight - targetWeight;
+        const done = startWeight - currentWeight;
+
+        weightLeft = currentWeight - targetWeight;
+        weightProgress = Math.min(100, Math.max(0, (done / total) * 100));
+    }
+
+    if (mode === "gain") {
+        const total = targetWeight - startWeight;
+        const done = currentWeight - startWeight;
+
+        weightLeft = targetWeight - currentWeight;
+        weightProgress = Math.min(100, Math.max(0, (done / total) * 100));
+    }
 
     return (
         <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">

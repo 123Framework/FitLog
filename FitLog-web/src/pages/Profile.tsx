@@ -17,7 +17,7 @@ export default function Profile() {
         <div className="min-h-screen bg-gray-900 flex items-center justify-center px-6">
             <div className="w-full max-w-sm rounded-lg bg-white/5 p-6 shadow-lg outline outline-1 outline-white/10">
                 <h2 className="text-center text-2xl font-bold text-white mb-6">Profile</h2>
-                <div className="space-y-3 text-sm text-gray-300">
+                <div className="space-y-3 text-sm text-white">
 
                     <div className="flex justify-between">
                         <span>Email</span>

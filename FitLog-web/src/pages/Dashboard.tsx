@@ -38,6 +38,65 @@ export default function Dashboard() {
         } catch { }
     }
 
+    interface ChatMessage {
+        role: "user" | "assistant";
+        content: string;
+    }
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const [input, setInput] = useState("");
+
+    async function sendMessage() {
+        if (!input.trim()) return;
+
+        const newMessages: ChatMessage[] = [
+            ...messages,
+            { role: "user", content: input }
+        ];
+        setMessages(newMessages);
+        setInput("");
+
+        const contextInfo = `
+        User current stats:
+        - Today calories: ${caloriesIn}
+        - Today protein: ${protein}g, fat: ${fat}g, carbs: ${carbs}g
+        - Calories out today: ${caloriesOut}
+        - Weight: start ${startWeight ?? "?"}kg, now ${currentWeight ?? "?"}kg, target ${targetWeight ?? "?"}kg
+        - Weight progress: ${weightProgress.toFixed(1) }%
+
+        Goals:
+        - Daily calories goal: ${goal?.dailyCalories ?? "not set"}
+        - Weight direction: ${mode ?? "unknown"}
+        `;
+
+        const apiKey = import.meta.env.VITE_OPENAI_KEY;
+
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify({
+                model: "gpt-4o-mini",
+                messages: [
+                    { role: "system", content: "“ы фитнес-ассистент. ƒавай простые, полезные советы без медицинских диагнозов." },
+                    { role: "system", content: contextInfo },
+                    ...newMessages
+                ]
+            }),
+
+        });
+
+        const data = await res.json();
+        const aiReply = data.choices?.[0]?.message?.content ?? "Error";
+
+        setMessages([
+            ...newMessages,
+            { role: "assistant", content: aiReply }
+        ]);
+    }
+
+
     useEffect(() => {
         async function load() {
             try {
@@ -288,6 +347,30 @@ export default function Dashboard() {
                         </p>
                     </div>
                 )}
+
+                <div className="p-4 bg-white shadow rounded-xl col-span-2 mt-6">
+                    <h2 className="text-xl font-semibold mb-2">AI Fitness Assistant</h2>
+                    <div className="h-60 overflow-y-auto border p-3 rounded bg-gray-50 mb-4 space-y-3">
+                        {messages.map((m, i) => (
+                            <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
+                                <span className={`inline-block px-3 py-2 rounded-lg${
+                                    m.role === "user" ? "bg-blue-200" : "bg-green-200"
+                                    }`}>{m.content}</span>
+                                    </div>
+                        ))}
+                    </div>
+                    <div className="flex gap-2">
+                        <input className="border p-2 rounded flex-1"
+                            placeholder="Ask AI about your progress"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={(e) => e.key === "Enter" && sendMessage()} />
+
+                        <button onClick={sendMessage} className="bg-blue-600 text-white px-4 py-2 rounded">
+                        Send
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );

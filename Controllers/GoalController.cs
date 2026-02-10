@@ -30,7 +30,17 @@ namespace FitLog.Controllers
 
             var goal = await _context.Goals.FirstOrDefaultAsync(g => g.UserId == user.Id);
 
-            return Ok(goal);
+            return Ok(new UserGoalDto
+            {
+                TargetWeight = goal.TargetWeight,
+                TargetDate = goal.TargetDate,
+                DailyCalories = goal.DailyCalories,
+                DailyProtein = goal.DailyProtein,
+                DailyCarbs = goal.DailyCarbs,
+                DailyFat = goal.DailyFat,
+
+            });
+           
         }
 
         [HttpPost]
@@ -44,6 +54,7 @@ namespace FitLog.Controllers
             {
                 goal = new Domain.Entities.UserGoal { UserId = user.Id };
                 _context.Goals.Add(goal);
+                await _context.SaveChangesAsync();
             }
             goal.TargetWeight = dto.TargetWeight;
             goal.TargetDate = dto.TargetDate;
@@ -54,7 +65,16 @@ namespace FitLog.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(goal);
+            return Ok(new UserGoalDto
+            {
+                TargetWeight = goal.TargetWeight,
+                TargetDate = goal.TargetDate,
+                DailyCalories = goal.DailyCalories,
+                DailyProtein = goal.DailyProtein,
+                DailyCarbs = goal.DailyCarbs,
+                DailyFat = goal.DailyFat,
+
+            });
         }
     }
 }

@@ -70,11 +70,11 @@ export default function Dashboard() {
 
         const apiKey = import.meta.env.VITE_OPENAI_KEY;
 
-        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        const res = await fetch("/api/ai/chat", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+                
             },
             body: JSON.stringify({
                 model: "gpt-4o-mini",
@@ -87,13 +87,13 @@ export default function Dashboard() {
 
         });
 
-        const data = await res.json();
-        const aiReply = data.choices?.[0]?.message?.content ?? "Error";
+       // const data = await res.json();
+        //const aiReply = data.choices?.[0]?.message?.content ?? "Error";
 
-        setMessages([
+       /* setMessages([
             ...newMessages,
             { role: "assistant", content: aiReply }
-        ]);
+        ]);*/
     }
 
 

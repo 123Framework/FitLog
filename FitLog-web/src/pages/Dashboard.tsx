@@ -70,7 +70,7 @@ export default function Dashboard() {
 
         const apiKey = import.meta.env.VITE_OPENAI_KEY;
 
-        const res = await fetch("/api/ai/chat", {
+        const res = await fetch("https://localhost:7061/api/ai", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

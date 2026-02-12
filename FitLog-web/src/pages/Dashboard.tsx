@@ -87,13 +87,13 @@ export default function Dashboard() {
 
         });
 
-       // const data = await res.json();
-        //const aiReply = data.choices?.[0]?.message?.content ?? "Error";
+        const data = await res.json();
+        const aiReply = data.choices?.[0]?.message?.content ?? "Error";
 
-       /* setMessages([
+        setMessages([
             ...newMessages,
             { role: "assistant", content: aiReply }
-        ]);*/
+        ]);
     }
 
 

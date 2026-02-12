@@ -41,6 +41,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 
 });
+builder.Services.AddHttpClient();
 
 builder.Services.AddCors(options =>
 {

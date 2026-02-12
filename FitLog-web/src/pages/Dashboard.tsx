@@ -88,7 +88,7 @@ export default function Dashboard() {
         });
 
         const data = await res.json();
-        const aiReply = data.choices?.[0]?.message?.content ?? "Error";
+        const aiReply = data.reply ?? "Error";
 
         setMessages([
             ...newMessages,

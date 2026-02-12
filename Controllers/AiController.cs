@@ -14,10 +14,11 @@ namespace FitLog.Controllers
        private readonly IConfiguration _config;
         private readonly HttpClient _http;
 
-        public AiController(IConfiguration config)
+        public AiController(IConfiguration config, HttpClient http)
         {
             _config = config;
-            _http =  new HttpClient();
+          //  _http =  new HttpClient();
+          _http = http;
         }
         [HttpPost]
         public async Task<IActionResult> Chat([FromBody] AiRequest request)

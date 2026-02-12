@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FitLog.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using System.Text.Json;
 
 namespace FitLog.Controllers
 
@@ -12,22 +14,31 @@ namespace FitLog.Controllers
        private readonly IConfiguration _config;
         private readonly HttpClient _http;
 
-        public AiController(IConfiguration config, HttpClient http)
+        public AiController(IConfiguration config)
         {
             _config = config;
-            _http =  http;
+            _http =  new HttpClient();
         }
         [HttpPost]
-        public async Task<IActionResult> Chat([FromBody] object body)
+        public async Task<IActionResult> Chat([FromBody] AiRequest request)
         {
             var apiKey = _config["OpenAI:ApiKey"];
-            var req = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions");
 
-            req.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer",apiKey);
-            req.Content = new StringContent(body.ToString(), Encoding.UTF8, "application/json");
+            if (apiKey == null)
+                return StatusCode(500, "Missing OpenAI API key");
 
-            var res = await _http.SendAsync(req);
-            var json = await res.Content.ReadAsStringAsync();
+            var payload = JsonSerializer.Serialize(new
+            {
+                model = request.Model,
+                messages = request.Messages
+            });
+
+            var http = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions");
+            http.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
+            http.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+            var response = await _http.SendAsync(http);
+            var json = await response.Content.ReadAsStringAsync();
 
             return Content(json, "application/json");
         }

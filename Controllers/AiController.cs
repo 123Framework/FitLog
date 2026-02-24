@@ -30,13 +30,23 @@ namespace FitLog.Controllers
 
             var http = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions");
 
-            http.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
-            
+            http.Headers.Add("Authorization", $"Bearer {apiKey}");
+            http.Headers.Add("HTTP-Refer", "http://localhost");
+            http.Headers.Add("X-Title","FitLog");
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy= JsonNamingPolicy.CamelCase
+            };
+
             http.Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
             
 
             var response = await _http.SendAsync(http);
             var json = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine("RAW OPENAI RESPONSE: ");
+            Console.WriteLine(json);
 
             var aiRes = JsonSerializer.Deserialize<AiResponse>(json);
             var text = aiRes?.Choices?.FirstOrDefault()?.Message?.Content ?? "AI error";

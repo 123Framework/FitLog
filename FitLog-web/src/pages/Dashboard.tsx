@@ -55,7 +55,7 @@ export default function Dashboard() {
         setMessages(newMessages);
         setInput("");
 
-        const contextInfo = `
+        const contextInfo =/* `
         User current stats:
         - Today calories: ${caloriesIn}
         - Today protein: ${protein}g, fat: ${fat}g, carbs: ${carbs}g
@@ -65,8 +65,15 @@ export default function Dashboard() {
 
         Goals:
         - Daily calories goal: ${goal?.dailyCalories ?? "not set"}
-        - Weight direction: ${mode ?? "unknown"}
-        `;
+        - Weight direction: ${mode ?? "unknown"}*/
+            `
+            FITNESS_HISTORY = {
+            "weight": ${JSON.stringify(weightTrend)},
+            "daily_calories_in": ${JSON.stringify(last7Calories.map(x => x.calories))},
+            "daily_calories_out": ${JSON.stringify(last7Calories.map((_, i) => workouts.filter(w => w.dateTime?.slice(0, 10) === last7Calories[i].date).reduce((s, w) => s + w.caloriesBurned, 0)))},
+            "macros_today": { "protein": ${protein}, "fat": ${fat}, "carbs": ${carbs} }
+}
+            `;
 
         const apiKey = import.meta.env.VITE_OPENAI_KEY;
 
@@ -74,12 +81,35 @@ export default function Dashboard() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
-                
+
             },
             body: JSON.stringify({
                 model: "gpt-4o-mini",
                 messages: [
-                    { role: "system", content: "Ты фитнес-ассистент. Давай простые, полезные советы без медицинских диагнозов." },
+                    {
+                        role: "system", content: `Ты — AI Fitness Coach.
+Анализируй ПОЛНЫЙ ПРОЦЕСС, включая тренды веса и калорий.
+                            Учитывай:
+- историю веса за несколько дней
+                    - тренд калорий IN и OUT
+                    - net динамику прошлых дней
+                    - скорость прогресса
+                    - отклонения от плана
+                    - плато или ускорения
+                    - соответствие макросов целям
+
+Структура ответа(обязательно такая!):
+                    1) Краткое резюме состояния(1–2 строки)
+2) Анализ тренда (7 дней):
+        - изменение веса
+            - изменение калорий
+                - тренд активности
+        3) Проблемы / риски(если есть)
+        4) Рекомендации на завтра:
+        - питание
+            - тренировки
+            - корректировки плана
+Отвечай как профессиональный тренер, без воды` },
                     { role: "system", content: contextInfo },
                     ...newMessages
                 ]
@@ -319,7 +349,7 @@ export default function Dashboard() {
                         <p>{((caloriesIn / goal.dailyCalories) * 100).toFixed(1)}%</p>
                     </div>
 
-             
+
                 )}
 
                 {goal?.targetWeight && currentWeight !== null && (
@@ -353,10 +383,9 @@ export default function Dashboard() {
                     <div className="h-60 overflow-y-auto border p-3 rounded bg-gray-50 mb-4 space-y-3">
                         {messages.map((m, i) => (
                             <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
-                                <span className={`inline-block px-3 py-2 rounded-lg${
-                                    m.role === "user" ? "bg-blue-200" : "bg-green-200"
+                                <span className={`inline-block px-3 py-2 rounded-lg${m.role === "user" ? "bg-blue-200" : "bg-green-200"
                                     }`}>{m.content}</span>
-                                    </div>
+                            </div>
                         ))}
                     </div>
                     <div className="flex gap-2">
@@ -367,7 +396,7 @@ export default function Dashboard() {
                             onKeyDown={(e) => e.key === "Enter" && sendMessage()} />
 
                         <button onClick={sendMessage} className="bg-blue-600 text-white px-4 py-2 rounded">
-                        Send
+                            Send
                         </button>
                     </div>
                 </div>

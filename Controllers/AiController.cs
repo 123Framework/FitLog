@@ -28,21 +28,21 @@ namespace FitLog.Controllers
             if (apiKey == null)
                 return StatusCode(500, "Missing OpenAI API key");
 
-            var http = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions");
+           var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://openrouter.ai/api/v1/chat/completions");
 
-            http.Headers.Add("Authorization", $"Bearer {apiKey}");
-            http.Headers.Add("HTTP-Refer", "http://localhost");
-            http.Headers.Add("X-Title","FitLog");
+            requestMessage.Headers.Add("Authorization", $"Bearer {apiKey}");
+            requestMessage.Headers.Add("HTTP-Refer", "http://localhost");
+            requestMessage.Headers.Add("X-Title","FitLog");
 
             var jsonOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy= JsonNamingPolicy.CamelCase
             };
 
-            http.Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            requestMessage.Content = new StringContent(JsonSerializer.Serialize(request,jsonOptions), Encoding.UTF8, "application/json");
             
 
-            var response = await _http.SendAsync(http);
+            var response = await _http.SendAsync(requestMessage);
             var json = await response.Content.ReadAsStringAsync();
 
             Console.WriteLine("RAW OPENAI RESPONSE: ");

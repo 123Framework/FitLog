@@ -55,25 +55,21 @@ export default function Dashboard() {
         setMessages(newMessages);
         setInput("");
 
-        const contextInfo =/* `
-        User current stats:
-        - Today calories: ${caloriesIn}
-        - Today protein: ${protein}g, fat: ${fat}g, carbs: ${carbs}g
-        - Calories out today: ${caloriesOut}
-        - Weight: start ${startWeight ?? "?"}kg, now ${currentWeight ?? "?"}kg, target ${targetWeight ?? "?"}kg
-        - Weight progress: ${weightProgress.toFixed(1) }%
-
-        Goals:
-        - Daily calories goal: ${goal?.dailyCalories ?? "not set"}
-        - Weight direction: ${mode ?? "unknown"}*/
+        const contextInfo =
             `
             FITNESS_HISTORY = {
             "weight": ${JSON.stringify(weightTrend)},
             "daily_calories_in": ${JSON.stringify(last7Calories.map(x => x.calories))},
-            "daily_calories_out": ${JSON.stringify(last7Calories.map((_, i) => workouts.filter(w => w.dateTime?.slice(0, 10) === last7Calories[i].date).reduce((s, w) => s + w.caloriesBurned, 0)))},
-            "macros_today": { "protein": ${protein}, "fat": ${fat}, "carbs": ${carbs} }
-}
-            `;
+            "daily_calories_out": ${JSON.stringify(
+             last7Calories.map(day =>
+             workouts
+             .filter(w => w.dateTime?.slice(0, 10) === day.date)
+             .reduce((s, w) => s + w.caloriesBurned, 0)
+             )
+             )},
+             "macros_today": { "protein": ${protein}, "fat": ${fat}, "carbs": ${carbs} }
+             }
+             `;
 
         const apiKey = import.meta.env.VITE_OPENAI_KEY;
 
@@ -178,7 +174,8 @@ export default function Dashboard() {
         const cal = mealsDay.reduce((s, m) => s + m.calories, 0);
 
         return {
-            date: d.toLocaleDateString("en-US", { weekday: "short" }),
+            date: key,
+            label: d.toLocaleDateString("en-US", { weekday: "short" }),
             calories: cal,
         };
     }).reverse();

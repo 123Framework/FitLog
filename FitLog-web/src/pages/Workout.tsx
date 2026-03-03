@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { api } from '../api'
 import '../Index.css'
+import { Workout } from '../types'
 
 export default function Workouts() {
 
@@ -15,16 +16,20 @@ export default function Workouts() {
     const [msg, setMsg] = useState('')
     const [editing, setEditing] = useState<any | null>(null);
     useEffect(() => {
-        api.request('/api/workout')
+        api.request<any[]>('/api/workout')
             .then(setWorkouts)
             .catch(() => setMsg('Not logged in'))
     }, [])
     const addWorkout = async (e: React.FormEvent) => {
         e.preventDefault()
         try {
-            const result = await api.request('/api/workout', {
+            const newWorkout = {
+                ...form,
+                dateTime: new Date().toISOString(),
+            };
+            const result = await api.request<Workout>('/api/workout', {
                 method: 'POST',
-                body: JSON.stringify(form),
+                body: JSON.stringify(newWorkout),
             })
             setWorkouts([result, ...workouts])
             setForm({ title: '', notes: '', durationMin: 30, caloriesBurned: 200 })

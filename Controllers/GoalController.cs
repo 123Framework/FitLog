@@ -29,9 +29,16 @@ namespace FitLog.Controllers
             if (user == null) return Unauthorized();
 
             var goal = await _context.Goals.FirstOrDefaultAsync(g => g.UserId == user.Id);
+            if (goal == null)
+            {
+                return Ok(new UserGoalDto {
+                    HasGoal = false
+                });
+            }
 
             return Ok(new UserGoalDto
             {
+                HasGoal = true,
                 TargetWeight = goal.TargetWeight,
                 TargetDate = goal.TargetDate,
                 DailyCalories = goal.DailyCalories,

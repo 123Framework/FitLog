@@ -33,7 +33,7 @@ namespace FitLog.Controllers
 
             var workouts = await _db.Workouts
                 .Where(w => w.UserId == user.Id)
-                .OrderByDescending(w => w.Date)
+                .OrderByDescending(w => w.DateTime)
                 .ToListAsync();
             return Ok(workouts);
 
@@ -49,7 +49,7 @@ namespace FitLog.Controllers
                 UserId = user.Id,
                 Title = dto.Title,
                 Notes = dto.Notes,
-                Date = dto.Date == default ? DateTime.UtcNow : dto.Date,
+                DateTime = dto.DateTime == default ? DateTime.UtcNow : dto.DateTime,
                 DurationMin = dto.DurationMin,
                 CaloriesBurned = dto.CaloriesBurned
 
@@ -75,7 +75,7 @@ namespace FitLog.Controllers
 
             workout.Title = dto.Title;
             workout.Notes = dto.Notes;
-            workout.Date = dto.Date == default ? DateTime.UtcNow : dto.Date;
+            workout.DateTime = dto.DateTime == default ? DateTime.UtcNow : dto.DateTime;
             workout.DurationMin = dto.DurationMin;
             workout.CaloriesBurned = dto.CaloriesBurned;
 

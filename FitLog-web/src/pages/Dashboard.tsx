@@ -399,7 +399,10 @@ export default function Dashboard() {
                             Send
                         </button>
                     </div>
+                    <button onClick={runWeeklyAnalysis} className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-500 w-full mt-4">
+                    Weekly AI Analysis</button>
                 </div>
+
             </div>
         </div>
     );

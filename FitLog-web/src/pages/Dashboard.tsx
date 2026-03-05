@@ -55,21 +55,24 @@ export default function Dashboard() {
         setMessages(newMessages);
         setInput("");
 
-        const contextInfo =
-            `
-            FITNESS_HISTORY = {
-            "weight": ${JSON.stringify(weightTrend)},
-            "daily_calories_in": ${JSON.stringify(last7Calories.map(x => x.calories))},
-            "daily_calories_out": ${JSON.stringify(
-             last7Calories.map(day =>
-             workouts
-             .filter(w => w.dateTime?.slice(0, 10) === day.date)
-             .reduce((s, w) => s + w.caloriesBurned, 0)
-             )
-             )},
-             "macros_today": { "protein": ${protein}, "fat": ${fat}, "carbs": ${carbs} }
-             }
-             `;
+        const contextInfo = `
+        FITNESS_HISTORY = {
+          "weight": ${JSON.stringify(weightTrend)},
+          "daily_calories_in": ${JSON.stringify(last7Calories.map(x => x.calories))},
+          "daily_calories_out": ${JSON.stringify(
+            last7Calories.map(day =>
+                workouts
+                    .filter(w => w.dateTime?.slice(0, 10) === day.date)
+                    .reduce((s, w) => s + w.caloriesBurned, 0)
+            )
+        )},
+                  "macros_today": { 
+                       "protein": ${protein}, 
+                       "fat": ${fat}, 
+                       "carbs": ${carbs} 
+  }
+}
+`;
 
         const apiKey = import.meta.env.VITE_OPENAI_KEY;
 

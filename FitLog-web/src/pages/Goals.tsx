@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../api";
 
+import {useNavigate } from "react-router-dom"
+
 export default function Goals() {
     const [goal, setGoal] = useState<any>(null);
+
+    const [msg, setMsg] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         api.getGoal().then(setGoal);
@@ -11,6 +16,11 @@ export default function Goals() {
     const updateGoal = async () => {
         const updated = await api.setGoal(goal);
         setGoal(updated);
+        setMsg("Goal saved!");
+
+        setTimeout(() => {
+            navigate("/dashboard");
+        }, 1200);
     };
 
     return (
@@ -20,7 +30,9 @@ export default function Goals() {
                 <h1 className="text-center text-2xl font-bold text-white mb-6">
                     Your Goals
                 </h1>
-
+                {msg && (
+                    <div className="mb-4 rounded-md bg-green-600 text-white px-4 py-2 text-center">{msg}</div>
+                ) }
                 <div className="space-y-4">
 
                     <div>

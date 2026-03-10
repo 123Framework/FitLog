@@ -14,6 +14,7 @@ import {
 } from "recharts";
 
 export default function Dashboard() {
+
     const [meals, setMeals] = useState<Meal[]>([]);
     const [workouts, setWorkouts] = useState<Workout[]>([]);
     const [weights, setWeights] = useState<WeightEntry[]>([]);
@@ -22,13 +23,18 @@ export default function Dashboard() {
     const [msg, setMsg] = useState("");
     const [newWeight, setNewWeight] = useState("");
 
+    const [messages, setMessages] = useState<{ role: "user" | "assistant", content: string }[]>([]);
+    const [input, setInput] = useState("");
+
+    const [loadingAnalysis, setLoadingAnalysis] = useState(false);
+
+    const [language, setLanguage] = useState<"ru" | "en">("ru");
+
     async function loadGoal() {
         try {
             const g = await api.getGoal();
             setGoal(g);
-        } catch {
-            console.log("No goal set");
-        }
+        } catch { }
     }
 
     async function loadWeights() {
@@ -37,94 +43,6 @@ export default function Dashboard() {
             setWeights(w);
         } catch { }
     }
-
-    interface ChatMessage {
-        role: "user" | "assistant";
-        content: string;
-    }
-    const [messages, setMessages] = useState<ChatMessage[]>([]);
-    const [input, setInput] = useState("");
-
-    async function sendMessage() {
-        if (!input.trim()) return;
-
-        const newMessages: ChatMessage[] = [
-            ...messages,
-            { role: "user", content: input }
-        ];
-        setMessages(newMessages);
-        setInput("");
-
-        const contextInfo = `
-        FITNESS_HISTORY = {
-          "weight": ${JSON.stringify(weightTrend)},
-          "daily_calories_in": ${JSON.stringify(last7Calories.map(x => x.calories))},
-          "daily_calories_out": ${JSON.stringify(
-            last7Calories.map(day =>
-                workouts
-                    .filter(w => w.dateTime?.slice(0, 10) === day.date)
-                    .reduce((s, w) => s + w.caloriesBurned, 0)
-            )
-        )},
-                  "macros_today": { 
-                       "protein": ${protein}, 
-                       "fat": ${fat}, 
-                       "carbs": ${carbs} 
-  }
-}
-`;
-
-        const apiKey = import.meta.env.VITE_OPENAI_KEY;
-
-        const res = await fetch("https://localhost:7061/api/ai", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-
-            },
-            body: JSON.stringify({
-                model: "gpt-4o-mini",
-                messages: [
-                    {
-                        role: "system", content: `Ты — AI Fitness Coach.
-Анализируй ПОЛНЫЙ ПРОЦЕСС, включая тренды веса и калорий.
-                            Учитывай:
-- историю веса за несколько дней
-                    - тренд калорий IN и OUT
-                    - net динамику прошлых дней
-                    - скорость прогресса
-                    - отклонения от плана
-                    - плато или ускорения
-                    - соответствие макросов целям
-
-Структура ответа(обязательно такая!):
-                    1) Краткое резюме состояния(1–2 строки)
-2) Анализ тренда (7 дней):
-        - изменение веса
-            - изменение калорий
-                - тренд активности
-        3) Проблемы / риски(если есть)
-        4) Рекомендации на завтра:
-        - питание
-            - тренировки
-            - корректировки плана
-Отвечай как профессиональный тренер, без воды` },
-                    { role: "system", content: contextInfo },
-                    ...newMessages
-                ]
-            }),
-
-        });
-
-        const data = await res.json();
-        const aiReply = data.reply ?? "Error";
-
-        setMessages([
-            ...newMessages,
-            { role: "assistant", content: aiReply }
-        ]);
-    }
-
 
     useEffect(() => {
         async function load() {
@@ -143,6 +61,7 @@ export default function Dashboard() {
         loadWeights();
         loadGoal();
     }, []);
+
 
     const today = new Date().toISOString().slice(0, 10);
 
@@ -199,38 +118,18 @@ export default function Dashboard() {
     const currentWeight = sortedWeights.length ? sortedWeights[sortedWeights.length - 1].weightKg : null;
     const targetWeight = goal?.targetWeight ?? null;
 
-    let mode: "lose" | "gain" | null = null;
     let weightProgress = 0;
     let weightLeft = 0;
 
-    //if (startWeight !== null && targetWeight !== null) {
-    //    mode = targetWeight < startWeight ? "lose" : "gain";
-    //}
+    let mode: "lose" | "gain" | null = null;
 
-    if (startWeight === null || currentWeight === null || targetWeight === null) {
-        weightLeft = 0;
-        weightProgress = 0;
-
-    }
-    else {
-        const mode: "lose" | "gain" =
-            targetWeight < startWeight ? "lose" : "gain";
-
-        if (mode === "lose" && currentWeight !== null) {
-            const total = startWeight - targetWeight;
-            const done = startWeight - currentWeight;
-
-            weightLeft = currentWeight - targetWeight;
-            weightProgress = Math.min(100, Math.max(0, (done / total) * 100));
-        }
-
-        if (mode === "gain" && currentWeight !== null) {
-            const total = targetWeight - startWeight;
-            const done = currentWeight - startWeight;
-
-            weightLeft = targetWeight - currentWeight;
-            weightProgress = Math.min(100, Math.max(0, (done / total) * 100));
-        }
+    if (startWeight !== null && currentWeight !== null && targetWeight !== null) {
+        const lose = targetWeight < startWeight;
+        const total = Math.abs(startWeight - targetWeight);
+        const done = Math.abs(startWeight - currentWeight);
+        mode = targetWeight < startWeight ? "lose" : "gain";
+        weightLeft = Math.abs(currentWeight - targetWeight);
+        weightProgress = Math.min(100, Math.max(0, (done / total) * 100));
     }
 
     const weightTrend = sortedWeights.map(w => ({
@@ -241,10 +140,124 @@ export default function Dashboard() {
         weight: w.weightKg
     }));
 
+
+ 
+    const runWeeklyAnalysis = async () => {
+        setLoadingAnalysis(true);
+
+        const context = {
+            weightTrend,
+            last7Calories,
+            dailyCaloriesOut: last7Calories.map(day =>
+                workouts
+                    .filter(w => w.dateTime?.slice(0, 10) === day.date)
+                    .reduce((s, w) => s + w.caloriesBurned, 0)
+            ),
+            goal: goal || null,
+            mealsLast7Days: meals.filter(m => new Date(m.dateTime) >= sevenDaysAgo),
+            workoutsLast7Days: workouts.filter(w => new Date(w.dateTime!) >= sevenDaysAgo)
+        };
+
+        const systemLang = language === "ru" ? "РћС‚РІРµС‡Р°Р№ РЅР° СЂСѓСЃСЃРєРѕРј СЏР·С‹РєРµ." : "answer in english";
+
+        const res = await fetch("https://localhost:7061/api/ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model: "gpt-4o-mini",
+                messages: [
+                    {
+                        role: "system",
+                        content: `
+You are an AI Fitness Coach.
+Provide a detailed WEEKLY fitness analysis:
+
+1. Weekly performance summary  
+2. Nutrition review  
+3. Training review  
+4. Weight goal progress  
+5. Specific recommendations  
+6. Estimated time to reach goal  
+7. Encouraging summary
+${systemLang}
+`
+                    },
+                    {
+                        role: "system", 
+                        content: "DATA: " + JSON.stringify(context)
+                    },
+                    { role: "user", content: "Give me a full weekly fitness analysis." }
+                ]
+            })
+        });
+
+        const data = await res.json();
+
+        setMessages(prev => [...prev, {
+            role: "assistant",
+            content: data.reply
+        }]);
+
+        setLoadingAnalysis(false);
+    };
+
+
+    async function sendMessage() {
+        if (!input.trim()) return;
+
+        const msgs = [...messages, { role: "user" as const, content: input }];
+        setMessages(msgs);
+        setInput("");
+
+        const systemLang = language === "ru" ? "РћС‚РІРµС‡Р°Р№ РЅР° СЂСѓСЃСЃРєРѕРј СЏР·С‹РєРµ." : "answer in english";
+
+        const res = await fetch("https://localhost:7061/api/ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model: "gpt-4o-mini",
+                messages: [
+                {role: "system", content:systemLang},
+                ...msgs
+                 ] 
+            }),
+        });
+
+        const data = await res.json();
+
+        setMessages(prev => [
+            ...prev,
+            { role: "assistant", content: data.reply }
+        ]);
+    }
+
+
     return (
         <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl">
             <h1 className="text-4xl font-bold mb-4">Dashboard</h1>
+
             {msg && <p className="text-red-500">{msg}</p>}
+
+            <div className="mb-4 flex gap-3">
+                <button onClick={() => setLanguage("ru")} className={`px-3 py-1 rounded ${language === "ru" ? "bg-blue-600 text-white" : "bg-gray-200"}`}>
+                Р СѓСЃСЃРєРёР№
+                </button>
+                <button onClick={() => setLanguage("en")} className={`px-3 py-1 rounded ${language === "en" ? "bg-blue-600 text-white" : "bg-gray-200"}`}>
+                English
+                </button>
+            </div>
+
+            <button
+                onClick={runWeeklyAnalysis}
+                className="w-full bg-purple-600 text-white py-2 rounded mb-4 hover:bg-purple-500"
+            >
+                Run Weekly AI Analysis
+            </button>
+
+            {loadingAnalysis && (
+                <p className="text-center text-gray-600 mb-4">Analyzing last 7 days...</p>
+            )}
+
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 bg-white rounded-xl shadow text-center">
@@ -263,7 +276,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div className="p-4 bg-white shadow rounded-xl">
                     <h2 className="text-xl font-semibold mb-4">Calories (last 7 days)</h2>
                     <ResponsiveContainer width="100%" height={250}>
@@ -359,7 +372,7 @@ export default function Dashboard() {
                         </h2>
 
                         <p className="text-gray-600">
-                            Start: {startWeight} kg — Now: {currentWeight} kg — Target: {targetWeight} kg
+                            Start: {startWeight} kg вЂ” Now: {currentWeight} kg вЂ” Target: {targetWeight} kg
                         </p>
 
                         <div className="w-full bg-gray-200 h-4 rounded mt-2">
@@ -404,6 +417,7 @@ export default function Dashboard() {
                 </div>
 
             </div>
+
         </div>
     );
 }

@@ -230,6 +230,47 @@ ${systemLang}
             { role: "assistant", content: data.reply }
         ]);
     }
+    async function generateWorkout() {
+        const goalType = goal?.targetWeight && currentWeight && goal.targetWeight < currentWeight ? "fat loss" : "muscle gain";
+        const systemLang = language === "ru" ? "Отвечай на русском языке" : "Answer in english";
+        const res = await fetch("https://localhost:7061/api/ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model: "gpt-4o-mini",
+                messages: [
+                    {
+                        role: "system",
+                        content: `
+                        You re a professional fitness trainer
+                        Generate a workout for today
+                        User goal: ${goalType}
+                        Workout format:
+                        Warmup
+                        Exercise list
+                        Sets and reps
+                        Cooldown
+                        Keep it simple and practical
+                        ${systemLang}
+                        `
+
+                    },
+                    {
+                        role: "user",
+                        content: "Generate today's workout"
+                    }
+                ]
+            })
+        })
+        const data = await res.json();
+        setMessages(prev => [
+            ...prev,
+            {
+                role: "assistant",
+                content: data.reply
+            }
+        ]);
+    }
 
 
     return (
@@ -253,7 +294,9 @@ ${systemLang}
             >
                 Run Weekly AI Analysis
             </button>
-
+            <button
+                onClick={generateWorkout } className="w-full bg-green-600 text-white py-2 rounded mb-4 hover:bg-green-500"
+            >Ai workout generator</button>
             {loadingAnalysis && (
                 <p className="text-center text-gray-600 mb-4">Analyzing last 7 days...</p>
             )}

@@ -9,6 +9,7 @@ export interface Meal {
 
 }
 export interface Workout {
+    
     id: number;
     title: string;
     notes: string;

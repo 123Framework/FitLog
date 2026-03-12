@@ -12,6 +12,16 @@ import {
     Legend,
     ResponsiveContainer,
 } from "recharts";
+interface GeneratedWorkout {
+
+    title: string
+    exercises: {
+        name: string
+        sets: number
+        reps: string
+    }[]
+
+}
 
 export default function Dashboard() {
 
@@ -29,6 +39,8 @@ export default function Dashboard() {
     const [loadingAnalysis, setLoadingAnalysis] = useState(false);
 
     const [language, setLanguage] = useState<"ru" | "en">("ru");
+
+    const [generatedWorkout, setGeneratedWorkout] = useState<GeneratedWorkout | null>(null)
 
     async function loadGoal() {
         try {
@@ -141,7 +153,7 @@ export default function Dashboard() {
     }));
 
 
- 
+
     const runWeeklyAnalysis = async () => {
         setLoadingAnalysis(true);
 
@@ -183,7 +195,7 @@ ${systemLang}
 `
                     },
                     {
-                        role: "system", 
+                        role: "system",
                         content: "DATA: " + JSON.stringify(context)
                     },
                     { role: "user", content: "Give me a full weekly fitness analysis." }
@@ -217,9 +229,9 @@ ${systemLang}
             body: JSON.stringify({
                 model: "gpt-4o-mini",
                 messages: [
-                {role: "system", content:systemLang},
-                ...msgs
-                 ] 
+                    { role: "system", content: systemLang },
+                    ...msgs
+                ]
             }),
         });
 
@@ -243,14 +255,15 @@ ${systemLang}
                         role: "system",
                         content: `
                         You re a professional fitness trainer
-                        Generate a workout for today
-                        User goal: ${goalType}
-                        Workout format:
-                        Warmup
-                        Exercise list
-                        Sets and reps
-                        Cooldown
-                        Keep it simple and practical
+                       Generate a workout in JSON format
+                       Format:
+                       {
+                           "title":"",
+                           "exercises":[{"name":"", "sets":0, "reps":""}]
+
+                       }
+                       Goal: ${goalType}
+
                         ${systemLang}
                         `
 
@@ -263,13 +276,22 @@ ${systemLang}
             })
         })
         const data = await res.json();
-        setMessages(prev => [
-            ...prev,
-            {
-                role: "assistant",
-                content: data.reply
-            }
-        ]);
+
+        try {
+            const workout = JSON.parse(data.reply)
+            setGeneratedWorkout(workout)
+        }
+        catch {
+            setMessages(prev => [
+                ...prev,
+                {
+                    role: "assistant",
+                    content: data.reply
+                }
+            ]);
+        }
+
+
     }
 
 
@@ -281,10 +303,10 @@ ${systemLang}
 
             <div className="mb-4 flex gap-3">
                 <button onClick={() => setLanguage("ru")} className={`px-3 py-1 rounded ${language === "ru" ? "bg-blue-600 text-white" : "bg-gray-200"}`}>
-                Русский
+                    Русский
                 </button>
                 <button onClick={() => setLanguage("en")} className={`px-3 py-1 rounded ${language === "en" ? "bg-blue-600 text-white" : "bg-gray-200"}`}>
-                English
+                    English
                 </button>
             </div>
 
@@ -295,7 +317,7 @@ ${systemLang}
                 Run Weekly AI Analysis
             </button>
             <button
-                onClick={generateWorkout } className="w-full bg-green-600 text-white py-2 rounded mb-4 hover:bg-green-500"
+                onClick={generateWorkout} className="w-full bg-green-600 text-white py-2 rounded mb-4 hover:bg-green-500"
             >Ai workout generator</button>
             {loadingAnalysis && (
                 <p className="text-center text-gray-600 mb-4">Analyzing last 7 days...</p>
@@ -319,7 +341,7 @@ ${systemLang}
                 </div>
             </div>
 
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div className="p-4 bg-white shadow rounded-xl">
                     <h2 className="text-xl font-semibold mb-4">Calories (last 7 days)</h2>
                     <ResponsiveContainer width="100%" height={250}>
@@ -330,137 +352,156 @@ ${systemLang}
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
+            </div>
 
-                <div className="p-4 bg-white shadow rounded-xl">
-                    <h2 className="text-xl font-semibold mb-4">Macros Today</h2>
-                    <ResponsiveContainer width="100%" height={250}>
-                        <PieChart>
-                            <Pie
-                                data={macroData}
-                                dataKey="value"
-                                nameKey="name"
-                                outerRadius={80}
-                                label
-                            >
-                                {macroData.map((_, i) => (
-                                    <Cell key={i} fill={COLORS[i]} />
-                                ))}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                        </PieChart>
-                    </ResponsiveContainer>
+            <div className="p-4 bg-white shadow rounded-xl">
+                <h2 className="text-xl font-semibold mb-4">Macros Today</h2>
+                <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                        <Pie
+                            data={macroData}
+                            dataKey="value"
+                            nameKey="name"
+                            outerRadius={80}
+                            label
+                        >
+                            {macroData.map((_, i) => (
+                                <Cell key={i} fill={COLORS[i]} />
+                            ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                    </PieChart>
+                </ResponsiveContainer>
+            </div>
+
+            <div className="p-4 bg-white shadow rounded-xl col-span-2">
+                <h2 className="text-xl font-semibold mb-4">Weight Trend</h2>
+                <ResponsiveContainer width="100%" height={250}>
+                    <LineChart data={weightTrend}>
+                        <Line type="monotone" dataKey="weight" stroke="#10b981" strokeWidth={3} />
+                        <Tooltip />
+                    </LineChart>
+                </ResponsiveContainer>
+            </div>
+
+
+            <div className="p-4 bg-white shadow rounded-xl flex items-center gap-3 col-span-2">
+                <input
+                    type="number"
+                    step="0.1"
+                    className="border p-2 rounded w-32"
+                    placeholder="Weight (kg)"
+                    value={newWeight}
+                    onChange={(e) => setNewWeight(e.target.value)}
+                />
+                <button
+                    onClick={async () => {
+                        await api.request("/api/weight", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                weightKg: Number(newWeight),
+                                date: new Date().toISOString(),
+                            }),
+                        });
+                        setNewWeight("");
+                        loadWeights();
+                    }}
+                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                >
+                    Save
+                </button>
+            </div>
+
+            {/* CALORIES PROGRESS BAR */}
+            {goal?.dailyCalories && (
+                <div className="col-span-2">
+                    <p>Calories progress:</p>
+                    <div className="w-full bg-gray-200 h-3 rounded">
+                        <div
+                            className="bg-green-500 h-3 rounded"
+                            style={{
+                                width: `${Math.min(100, (caloriesIn / goal.dailyCalories) * 100)}%`,
+                            }}
+                        />
+                    </div>
+                    <p>{((caloriesIn / goal.dailyCalories) * 100).toFixed(1)}%</p>
                 </div>
 
+
+            )}
+
+            {goal?.targetWeight && currentWeight !== null && (
                 <div className="p-4 bg-white shadow rounded-xl col-span-2">
-                    <h2 className="text-xl font-semibold mb-4">Weight Trend</h2>
-                    <ResponsiveContainer width="100%" height={250}>
-                        <LineChart data={weightTrend}>
-                            <Line type="monotone" dataKey="weight" stroke="#10b981" strokeWidth={3} />
-                            <Tooltip />
-                        </LineChart>
-                    </ResponsiveContainer>
+                    <h2 className="text-xl font-semibold mb-2">
+                        {mode === "lose" ? "Weight Loss Progress" : "Weight Gain Progress"}
+                    </h2>
+
+                    <p className="text-gray-600">
+                        Start: {startWeight} kg — Now: {currentWeight} kg — Target: {targetWeight} kg
+                    </p>
+
+                    <div className="w-full bg-gray-200 h-4 rounded mt-2">
+                        <div
+                            className="bg-blue-600 h-4 rounded transition-all"
+                            style={{ width: `${weightProgress}%` }}
+                        />
+                    </div>
+
+                    <p className="mt-2 font-semibold">
+                        Progress: {weightProgress.toFixed(1)}%
+                        <span className="text-gray-500 ml-2">
+                            ({weightLeft.toFixed(1)} kg remaining)
+                        </span>
+                    </p>
                 </div>
+            )}
 
+            <div className="p-4 bg-white shadow rounded-xl col-span-2 mt-6">
+                <h2 className="text-xl font-semibold mb-2">AI Fitness Assistant</h2>
+                <div className="h-60 overflow-y-auto border p-3 rounded bg-gray-50 mb-4 space-y-3">
+                    {messages.map((m, i) => (
+                        <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
+                            <span className={`inline-block px-3 py-2 rounded-lg${m.role === "user" ? "bg-blue-200" : "bg-green-200"
+                                }`}>{m.content}</span>
+                        </div>
+                    ))}
+                </div>
+                <div className="flex gap-2">
+                    <input className="border p-2 rounded flex-1"
+                        placeholder="Ask AI about your progress"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && sendMessage()} />
 
-                <div className="p-4 bg-white shadow rounded-xl flex items-center gap-3 col-span-2">
-                    <input
-                        type="number"
-                        step="0.1"
-                        className="border p-2 rounded w-32"
-                        placeholder="Weight (kg)"
-                        value={newWeight}
-                        onChange={(e) => setNewWeight(e.target.value)}
-                    />
-                    <button
-                        onClick={async () => {
-                            await api.request("/api/weight", {
-                                method: "POST",
-                                body: JSON.stringify({
-                                    weightKg: Number(newWeight),
-                                    date: new Date().toISOString(),
-                                }),
-                            });
-                            setNewWeight("");
-                            loadWeights();
-                        }}
-                        className="bg-blue-600 text-white px-4 py-2 rounded"
-                    >
-                        Save
+                    <button onClick={sendMessage} className="bg-blue-600 text-white px-4 py-2 rounded">
+                        Send
                     </button>
                 </div>
+                <button onClick={runWeeklyAnalysis} className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-500 w-full mt-4">
+                    Weekly AI Analysis</button>
+            </div>
+            {generatedWorkout && (
+                <div className="bg-white shadow rounded-xl p-4 mt-6">
 
-                {/* CALORIES PROGRESS BAR */}
-                {goal?.dailyCalories && (
-                    <div className="col-span-2">
-                        <p>Calories progress:</p>
-                        <div className="w-full bg-gray-200 h-3 rounded">
-                            <div
-                                className="bg-green-500 h-3 rounded"
-                                style={{
-                                    width: `${Math.min(100, (caloriesIn / goal.dailyCalories) * 100)}%`,
-                                }}
-                            />
-                        </div>
-                        <p>{((caloriesIn / goal.dailyCalories) * 100).toFixed(1)}%</p>
-                    </div>
+                    <h2 className="text-xl font-bold mb-3">{generatedWorkout.title}</h2>
+                    <div className="space-y-2">
+                        {generatedWorkout.exercises.map((ex, i) => (
+                            <div key={i} className="flex justify-between border p-2 rounded">
 
+                                <span>{ex.name}</span>
+                                <span>{ex.sets}X{ex.reps}</span>
 
-                )}
-
-                {goal?.targetWeight && currentWeight !== null && (
-                    <div className="p-4 bg-white shadow rounded-xl col-span-2">
-                        <h2 className="text-xl font-semibold mb-2">
-                            {mode === "lose" ? "Weight Loss Progress" : "Weight Gain Progress"}
-                        </h2>
-
-                        <p className="text-gray-600">
-                            Start: {startWeight} kg — Now: {currentWeight} kg — Target: {targetWeight} kg
-                        </p>
-
-                        <div className="w-full bg-gray-200 h-4 rounded mt-2">
-                            <div
-                                className="bg-blue-600 h-4 rounded transition-all"
-                                style={{ width: `${weightProgress}%` }}
-                            />
-                        </div>
-
-                        <p className="mt-2 font-semibold">
-                            Progress: {weightProgress.toFixed(1)}%
-                            <span className="text-gray-500 ml-2">
-                                ({weightLeft.toFixed(1)} kg remaining)
-                            </span>
-                        </p>
-                    </div>
-                )}
-
-                <div className="p-4 bg-white shadow rounded-xl col-span-2 mt-6">
-                    <h2 className="text-xl font-semibold mb-2">AI Fitness Assistant</h2>
-                    <div className="h-60 overflow-y-auto border p-3 rounded bg-gray-50 mb-4 space-y-3">
-                        {messages.map((m, i) => (
-                            <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
-                                <span className={`inline-block px-3 py-2 rounded-lg${m.role === "user" ? "bg-blue-200" : "bg-green-200"
-                                    }`}>{m.content}</span>
                             </div>
                         ))}
                     </div>
-                    <div className="flex gap-2">
-                        <input className="border p-2 rounded flex-1"
-                            placeholder="Ask AI about your progress"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && sendMessage()} />
 
-                        <button onClick={sendMessage} className="bg-blue-600 text-white px-4 py-2 rounded">
-                            Send
-                        </button>
-                    </div>
-                    <button onClick={runWeeklyAnalysis} className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-500 w-full mt-4">
-                    Weekly AI Analysis</button>
+
                 </div>
-
-            </div>
+            )};
 
         </div>
-    );
+
+    )
 }
+)}

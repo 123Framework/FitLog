@@ -495,7 +495,20 @@ ${systemLang}
                             </div>
                         ))}
                     </div>
-
+                    <button onClick={async () => {
+                        await api.request("/api/workout", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                title: generatedWorkout.title,
+                                durationMin: 30,
+                                caloriesBurned: 200,
+                                dateTime: new Date().toISOString()
+                            })
+                        })
+                    }
+                    }
+                    className="mt-4 bg-blue-600 text-white px-4 py-2 rounded w-full">Save workout
+                    </button>
 
                 </div>
             )};
@@ -504,4 +517,4 @@ ${systemLang}
 
     )
 }
-)}
+

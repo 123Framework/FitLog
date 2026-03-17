@@ -278,8 +278,13 @@ ${systemLang}
         const data = await res.json();
 
         try {
+            let clean = data.reply
+                .replace(/```json/g, "")
+                .replace(/```/g, "")
+                .trim();
             const workout = JSON.parse(data.reply)
             setGeneratedWorkout(workout)
+
         }
         catch {
             setMessages(prev => [
@@ -496,22 +501,26 @@ ${systemLang}
                         ))}
                     </div>
                     <button onClick={async () => {
-                        await api.request("/api/workout", {
+                        const newWorkout =  await api.request<Workout>("/api/workout", {
                             method: "POST",
                             body: JSON.stringify({
                                 title: generatedWorkout.title,
+                                notes: "AI generated workout",
                                 durationMin: 30,
                                 caloriesBurned: 200,
                                 dateTime: new Date().toISOString()
                             })
                         })
+                        setWorkouts(prev => [newWorkout, ...prev]);
+                        setGeneratedWorkout(null);
+                        setMsg("Workout saved!");
                     }
                     }
                     className="mt-4 bg-blue-600 text-white px-4 py-2 rounded w-full">Save workout
                     </button>
 
                 </div>
-            )};
+            )}
 
         </div>
 

@@ -4,7 +4,7 @@
     {
         public double? TargetWeight { get; set; }
         public DateTime? TargetDate { get; set; }
-
+        public bool HasGoal { get; set; }
         public int? DailyCalories { get; set; }
         public int? DailyProtein { get; set; }
         public int? DailyFat { get; set; }

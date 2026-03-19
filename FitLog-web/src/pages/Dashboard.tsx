@@ -42,6 +42,9 @@ export default function Dashboard() {
 
     const [generatedWorkout, setGeneratedWorkout] = useState<GeneratedWorkout | null>(null)
 
+    const chatRef = React.useRef<HTMLDivElement | null>(null);
+    const [showScrollBtn, setShowScrollBtn] = useState(false);
+
     async function loadGoal() {
         try {
             const g = await api.getGoal();
@@ -74,6 +77,23 @@ export default function Dashboard() {
         loadGoal();
     }, []);
 
+    useEffect(() => {
+        const el = chatRef.current;
+        if (!el) return;
+
+        const handleScroll = () => {
+            const isBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 50;
+            setShowScrollBtn(!isBottom)
+        };
+        el.addEventListener("scroll", handleScroll);
+        return () => el.removeEventListener("scroll", handleScroll);
+    }, [])
+    useEffect(() => {
+        const el = chatRef.current;
+        if (!el) return;
+
+        el.scrollTop = el.scrollHeight;
+    },[messages]);
 
     const today = new Date().toISOString().slice(0, 10);
 
@@ -282,7 +302,7 @@ ${systemLang}
                 .replace(/```json/g, "")
                 .replace(/```/g, "")
                 .trim();
-            const workout = JSON.parse(data.reply)
+            const workout = JSON.parse(clean)
             setGeneratedWorkout(workout)
 
         }
@@ -464,13 +484,19 @@ ${systemLang}
 
             <div className="p-4 bg-white shadow rounded-xl col-span-2 mt-6">
                 <h2 className="text-xl font-semibold mb-2">AI Fitness Assistant</h2>
-                <div className="h-60 overflow-y-auto border p-3 rounded bg-gray-50 mb-4 space-y-3">
+                <div ref={ chatRef} className="h-60 overflow-y-auto border p-3 rounded bg-gray-50 mb-4 space-y-3">
                     {messages.map((m, i) => (
                         <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
                             <span className={`inline-block px-3 py-2 rounded-lg${m.role === "user" ? "bg-blue-200" : "bg-green-200"
                                 }`}>{m.content}</span>
                         </div>
                     ))}
+                    {showScrollBtn && (<button
+                        onClick={() => {
+                            const el = chatRef.current;
+                            if (el) el.scrollTop = el.scrollHeight;
+                        }}
+                        className="absolute bottom-3 right-3 bg-blue-600 text-white rounded-full w-10 h-10 shadow-lg hover:bg-blue-500">↓</button>)}
                 </div>
                 <div className="flex gap-2">
                     <input className="border p-2 rounded flex-1"
